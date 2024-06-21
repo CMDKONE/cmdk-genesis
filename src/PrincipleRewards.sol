@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-interface IERC20 {
-    function transfer(
-        address recipient,
-        uint256 amount
-    ) external returns (bool);
-}
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
  * @title Principle Rewards
@@ -14,15 +9,42 @@ interface IERC20 {
  * Users can stake or burn MODA in return for CMDKGenesisKit tokens.
  * Users can burn EMT in return for CMDKGenesisKit tokens.
  */
-contract PrincipleRewards {
-    IERC20 private modaToken = IERC20(0x0);
-    IERC20 private emtToken = IERC20(0x0);
+contract PrincipleRewards is OwnableUpgradeable {
+    address public modaToken;
+    address public emtToken;
+
+    // External functions
+    // ...
+
+    fallback() external {
+        // ...
+    }
+    receive() external payable {
+        // ...
+    }
+
+    // Private functions
+    // ...
+
+    // Public functions
+    // ...
+
+    function initialize(
+        address modaToken_,
+        address emtToken_
+    ) public initializer {
+        modaToken = modaToken_;
+        emtToken = emtToken_;
+    }
+
+    // Internal functions
+    // ...
 
     function stakeModa(uint256 amount) public {
         // TODO: Implement
     }
 
     function burnModa(uint256 amount) public {
-        // modaToken.transfer(recipient, amount);
+        // IERC20(modaToken).transfer(recipient, amount);
     }
 }

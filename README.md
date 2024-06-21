@@ -1,5 +1,7 @@
 # CMDK Genesis Kits
 
+Code style follows [Natspec](https://docs.soliditylang.org/en/latest/style-guide.html)
+
 ## Usage
 
 ### Build
