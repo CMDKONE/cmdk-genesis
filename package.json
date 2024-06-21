@@ -1,0 +1,19 @@
+{
+    "name": "cmdk-genesis-kit",
+    "license": "MIT",
+    "version": "0.0.19",
+    "description": "CMDK Genesis Kit",
+    "files": [
+      "src/**/*.sol"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/-/cmdk-genesis-kit.git"
+    },
+    "scripts": {
+      "test": "forge test",
+      "test:logs": "forge test -vvvv",
+      "deploy:token": "forge script script/CMDKGenesisKit.s.sol:CMDKGenesisKit"
+    }
+  }
+  
