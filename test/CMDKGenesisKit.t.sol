@@ -3,11 +3,15 @@ pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
+import {Ownable} from "solady/auth/Ownable.sol";
 
 contract CMDKGenesisKitTest is Test {
     CMDKGenesisKit public cmdkGenesisKit;
+    address owner = address(1);
+    address stranger = address(1000);
 
     function setUp() public {
+        vm.prank(owner);
         cmdkGenesisKit = new CMDKGenesisKit();
     }
 
@@ -20,6 +24,18 @@ contract CMDKGenesisKitTest is Test {
     }
 
     function test_totalSupply() public view {
-        assertEq(cmdkGenesisKit.totalSupply(), (10_000) * 10 ** 18);
+        assertEq(cmdkGenesisKit.totalSupply(), (5_000) * 10 ** 18);
+    }
+
+    function test_setSkipNFTForAddress() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setSkipNFTForAddress(stranger, true);
+        assertEq(cmdkGenesisKit.getSkipNFT(stranger), true);
+    }
+
+    function test_setSkipNFTForAddress_onlyOwner() public {
+        vm.expectRevert(Ownable.Unauthorized.selector);
+        vm.prank(stranger);
+        cmdkGenesisKit.setSkipNFTForAddress(stranger, true);
     }
 }

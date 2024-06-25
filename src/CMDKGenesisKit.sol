@@ -18,7 +18,7 @@ contract CMDKGenesisKit is DN404, Ownable {
 
     constructor() {
         _initializeOwner(msg.sender);
-        uint96 initialTokenSupply = (10_000) * 10 ** 18;
+        uint96 initialTokenSupply = (5_000) * 10 ** 18;
         address mirror = address(new DN404Mirror(msg.sender));
         _initializeDN404(initialTokenSupply, msg.sender, mirror);
     }
@@ -31,6 +31,7 @@ contract CMDKGenesisKit is DN404, Ownable {
         return "$CMK404";
     }
 
+    // TODO: Will all tokens share same metadata?
     function _tokenURI(
         uint256 tokenId
     ) internal view override returns (string memory result) {
@@ -41,13 +42,16 @@ contract CMDKGenesisKit is DN404, Ownable {
         }
     }
 
-    // This allows the owner of the contract to mint more tokens.
-    function mint(address to, uint256 amount) public onlyOwner {
-        _mint(to, amount);
-    }
-
     function setBaseURI(string calldata baseURI_) public onlyOwner {
         _baseURI = baseURI_;
+    }
+
+    function setSkipNFTForAddress(
+        address skipAddress,
+        bool skipNFT
+    ) public onlyOwner returns (bool) {
+        _setSkipNFT(skipAddress, skipNFT);
+        return true;
     }
 
     function withdraw() public onlyOwner {
