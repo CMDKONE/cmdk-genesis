@@ -1,4 +1,8 @@
 [profile.default]
+ffi = true
+ast = true
+build_info = true
+extra_output = ["storageLayout"]
 src = "src"
 out = "out"
 libs = ["lib"]
@@ -7,7 +11,7 @@ remappings = [
   "forge-std/=lib/forge-std/src/",
   "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
   "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
-  "@openzeppelin/foundry-upgradeable/=lib/openzeppelin-foundry-upgradeable/",
+  "openzeppelin-foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/",
   "solady/=lib/dn404/lib/solady/src"
 ]
 

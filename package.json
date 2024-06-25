@@ -11,6 +11,7 @@
       "url": "git+https://github.com/-/cmdk-genesis-kit.git"
     },
     "scripts": {
+      "clean": "forge clean && forge build",
       "test": "forge test",
       "test:logs": "forge test -vvvv",
       "deploy:token": "forge script script/CMDKGenesisKit.s.sol:CMDKGenesisKit"
