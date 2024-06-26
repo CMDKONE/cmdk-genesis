@@ -12,7 +12,7 @@
     },
     "scripts": {
       "clean": "forge clean && forge build",
-      "test": "forge test",
+      "test": "npm run clean && forge test",
       "test:logs": "forge test -vvvv",
       "deploy:token": "forge script script/CMDKGenesisKit.s.sol:CMDKGenesisKit"
     }

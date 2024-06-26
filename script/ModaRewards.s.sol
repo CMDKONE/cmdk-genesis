@@ -19,15 +19,26 @@ contract ModaRewardsScript is Script {
             deployerAddress
         );
 
+        uint256 startBurnPrice = 1000;
+        uint256 increaseStep = 100;
+
         SupporterRewards supporterRewards = SupporterRewards(
             Upgrades.deployBeaconProxy(
                 beacon,
                 abi.encodeCall(
                     SupporterRewards.initialize,
-                    (deployerAddress, supporterToken, cmdkToken)
+                    (
+                        deployerAddress,
+                        supporterToken,
+                        cmdkToken,
+                        startBurnPrice,
+                        increaseStep
+                    )
                 )
             )
         );
+
+        // TODO: setSkipNFT
 
         console2.log(
             "MODA SupporterRewards deployed at:",

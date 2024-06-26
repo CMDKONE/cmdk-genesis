@@ -18,32 +18,52 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     address public supporterToken;
     address public cmdkToken;
     // Updatable after deployment
-    uint256 public percentageDecimal;
-    uint256 public burnReturnPercent;
+    uint256 public startBurnPrice;
+    uint256 public increaseStep;
+    bool public canClaim;
+    mapping(address => uint256) pendingRewards;
+    uint256 public amountAllocated;
     // End of version 1 storage
 
     error MustBeNonZero();
     error InsufficientRewards();
     error AddressCannotBeZero();
+    error ClaimingNotEnabled();
 
-    function setReturnPercentage(uint256 percentage) external onlyOwner {
-        if (percentage == 0) revert MustBeNonZero();
-        burnReturnPercent = percentage;
+    function setPriceIncreaseStep(uint256 increaseStep_) external onlyOwner {
+        if (increaseStep_ == 0) revert MustBeNonZero();
+        increaseStep = increaseStep_;
     }
 
     function burn(uint256 amount) external {
         if (amount == 0) revert MustBeNonZero();
         IERC20(supporterToken).transferFrom(msg.sender, address(this), amount);
-        uint256 payout = (amount * burnReturnPercent) / percentageDecimal;
-        if (payout > IERC20(cmdkToken).balanceOf(address(this)))
+        uint256 payout = (amount * 10 ** 18) / getBurnPrice();
+        amountAllocated += payout;
+        if (amountAllocated > IERC20(cmdkToken).balanceOf(address(this)))
             revert InsufficientRewards();
-        IERC20(cmdkToken).transfer(msg.sender, payout);
+        pendingRewards[msg.sender] += payout;
+    }
+
+    function allocation(address user) external view returns (uint256) {
+        return pendingRewards[user];
+    }
+
+    function claim() external {
+        if (!canClaim) revert ClaimingNotEnabled();
+        uint256 amount = pendingRewards[msg.sender];
+        if (amount == 0) revert MustBeNonZero();
+        pendingRewards[msg.sender] = 0;
+        IERC20(cmdkToken).transfer(msg.sender, amount);
     }
 
     // Private functions
-    // ...
 
     // Public functions
+    function getBurnPrice() public view returns (uint256) {
+        // y = mx + c
+        return ((amountAllocated * increaseStep) / 10 ** 18) + startBurnPrice;
+    }
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -53,7 +73,9 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     function initialize(
         address owner,
         address supporterToken_,
-        address cmdkToken_
+        address cmdkToken_,
+        uint256 startBurnPrice_,
+        uint256 increaseStep_
     ) public initializer {
         if (supporterToken_ == address(0) || cmdkToken_ == address(0)) {
             revert AddressCannotBeZero();
@@ -61,8 +83,8 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
         OwnableUpgradeable.__Ownable_init(owner);
         supporterToken = supporterToken_;
         cmdkToken = cmdkToken_;
-        percentageDecimal = 100_000; // 100%
-        burnReturnPercent = 50_000; // 50% - 100 for every 200 burned
+        startBurnPrice = startBurnPrice_; // Number of token to burn to get 1 NFT
+        increaseStep = increaseStep_; // Price increase per NFT allocated
     }
 
     // Internal functions
