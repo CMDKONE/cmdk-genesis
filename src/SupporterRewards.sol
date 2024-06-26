@@ -20,7 +20,7 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     // Updatable after deployment
     uint256 public startBurnPrice;
     uint256 public increaseStep;
-    bool public canClaim;
+    bool public claimEnabled;
     mapping(address => uint256) pendingRewards;
     uint256 public amountAllocated;
     // End of version 1 storage
@@ -30,9 +30,37 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     error AddressCannotBeZero();
     error ClaimingNotEnabled();
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    // External Functions
+
+    function initialize(
+        address owner,
+        address supporterToken_,
+        address cmdkToken_,
+        uint256 startBurnPrice_,
+        uint256 increaseStep_
+    ) external initializer {
+        if (supporterToken_ == address(0) || cmdkToken_ == address(0)) {
+            revert AddressCannotBeZero();
+        }
+        OwnableUpgradeable.__Ownable_init(owner);
+        supporterToken = supporterToken_;
+        cmdkToken = cmdkToken_;
+        startBurnPrice = startBurnPrice_; // Number of token to burn to get 1 NFT
+        increaseStep = increaseStep_; // Price increase per NFT allocated
+    }
+
     function setPriceIncreaseStep(uint256 increaseStep_) external onlyOwner {
         if (increaseStep_ == 0) revert MustBeNonZero();
         increaseStep = increaseStep_;
+    }
+
+    function setClaimEnabled(bool claimEnabled_) external onlyOwner {
+        claimEnabled = claimEnabled_;
     }
 
     function burn(uint256 amount) external {
@@ -50,7 +78,7 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     }
 
     function claim() external {
-        if (!canClaim) revert ClaimingNotEnabled();
+        if (!claimEnabled) revert ClaimingNotEnabled();
         uint256 amount = pendingRewards[msg.sender];
         if (amount == 0) revert MustBeNonZero();
         pendingRewards[msg.sender] = 0;
@@ -60,30 +88,9 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     // Private functions
 
     // Public functions
+
     function getBurnPrice() public view returns (uint256) {
         return ((amountAllocated * increaseStep) / 10 ** 18) + startBurnPrice;
-    }
-
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() {
-        _disableInitializers();
-    }
-
-    function initialize(
-        address owner,
-        address supporterToken_,
-        address cmdkToken_,
-        uint256 startBurnPrice_,
-        uint256 increaseStep_
-    ) public initializer {
-        if (supporterToken_ == address(0) || cmdkToken_ == address(0)) {
-            revert AddressCannotBeZero();
-        }
-        OwnableUpgradeable.__Ownable_init(owner);
-        supporterToken = supporterToken_;
-        cmdkToken = cmdkToken_;
-        startBurnPrice = startBurnPrice_; // Number of token to burn to get 1 NFT
-        increaseStep = increaseStep_; // Price increase per NFT allocated
     }
 
     // Internal functions

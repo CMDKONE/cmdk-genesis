@@ -71,8 +71,7 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 2300);
         assertEq(
             supporterRewards.allocation(address(tokenHolder)),
-            // 2.5 NFT
-            2 * NFT + NFT / 2
+            2 * NFT + NFT / 2 // 2.5 NFT
         );
     }
 
@@ -97,5 +96,39 @@ contract SupporterRewardsTest is Test {
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 2999);
         assertEq(supporterRewards.allocation(address(tokenHolder)), 2 * NFT);
+    }
+
+    function test_claim_claimEnbled() public {
+        vm.startPrank(tokenHolder);
+        supporterToken.approve(address(supporterRewards), 1000);
+        supporterRewards.burn(1000);
+        vm.expectRevert(SupporterRewards.ClaimingNotEnabled.selector);
+        supporterRewards.claim();
+        vm.stopPrank();
+    }
+
+    function test_setClaimEnabled_onlyOwner() public {
+        vm.prank(stranger);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                OwnableUpgradeable.OwnableUnauthorizedAccount.selector,
+                stranger
+            )
+        );
+        supporterRewards.setClaimEnabled(true);
+    }
+
+    function test_claim() public {
+        vm.startPrank(tokenHolder);
+        supporterToken.approve(address(supporterRewards), 1000);
+        vm.startPrank(tokenHolder);
+        supporterRewards.burn(1000);
+        vm.startPrank(owner);
+        supporterRewards.setClaimEnabled(true);
+        vm.startPrank(tokenHolder);
+        supporterRewards.claim();
+        assertEq(supporterToken.balanceOf(address(tokenHolder)), 4000);
+        assertEq(supporterRewards.allocation(address(tokenHolder)), 0);
+        assertEq(cmdkToken.balanceOf(address(tokenHolder)), 1 * NFT);
     }
 }
