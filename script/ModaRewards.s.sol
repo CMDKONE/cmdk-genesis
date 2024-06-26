@@ -4,6 +4,8 @@ pragma solidity ^0.8.13;
 import {Script, console2} from "forge-std/Script.sol";
 import {SupporterRewards} from "../src/SupporterRewards.sol";
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
+import {ICMDKGenesisKit} from "../src/interfaces/ICMDKGenesisKit.sol";
 
 contract ModaRewardsScript is Script {
     function run() public {
@@ -38,7 +40,14 @@ contract ModaRewardsScript is Script {
             )
         );
 
-        // TODO: setSkipNFT
+        ICMDKGenesisKit(cmdkToken).setSkipNFTForAddress(
+            address(supporterRewards),
+            true
+        );
+        ICMDKGenesisKit(cmdkToken).transfer(
+            address(supporterRewards),
+            2000 * 10 ** 18
+        );
 
         console2.log(
             "MODA SupporterRewards deployed at:",

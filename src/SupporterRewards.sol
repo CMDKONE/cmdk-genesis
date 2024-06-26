@@ -61,7 +61,6 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
 
     // Public functions
     function getBurnPrice() public view returns (uint256) {
-        // y = mx + c
         return ((amountAllocated * increaseStep) / 10 ** 18) + startBurnPrice;
     }
 

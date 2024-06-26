@@ -1,9 +1,11 @@
 # CMDK Genesis Kits
 
-The CMDK Genesis Kit tokens are extended from the DN404 implementation.
+The CMDK Genesis Kit tokens are extended from the [DN404](https://github.com/vectorized/dn404.git) implementation.
 
-Burning and Staking of EMT and MODA is done through the use of the SupporterRewards contract.
-An instance of each is created per token. Rewards can be allocated and adjusted as needed.
+Burning of EMT and MODA is done through the use of the SupporterRewards contract.
+An instance per token is created. Rewards can be adjusted as needed.
+
+Burn Cost is adjusted after each burn using the linear equation with the gradient calculated by the amount of cmdk kits allocated multiplied by the step amount.
 
 These contracts will be first deployed on Ethereum and then bridged using Layer Zero and Arbitrum Bridge.
 
