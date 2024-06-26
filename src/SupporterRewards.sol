@@ -66,6 +66,7 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     function burn(uint256 amount) external {
         if (amount == 0) revert MustBeNonZero();
         IERC20(supporterToken).transferFrom(msg.sender, address(this), amount);
+        IERC20(supporterToken).transfer(burnAddress, amount);
         uint256 payout = (amount * 10 ** 18) / getBurnPrice();
         amountAllocated += payout;
         if (amountAllocated > IERC20(cmdkToken).balanceOf(address(this)))
@@ -83,6 +84,10 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
         if (amount == 0) revert MustBeNonZero();
         pendingRewards[msg.sender] = 0;
         IERC20(cmdkToken).transfer(msg.sender, amount);
+    }
+
+    function withdraw(uint256 amount) external onlyOwner {
+        IERC20(cmdkToken).transfer(owner(), amount);
     }
 
     // Private functions

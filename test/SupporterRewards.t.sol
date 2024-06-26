@@ -131,4 +131,10 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterRewards.allocation(address(tokenHolder)), 0);
         assertEq(cmdkToken.balanceOf(address(tokenHolder)), 1 * NFT);
     }
+
+    function test_withdraw() public {
+        vm.startPrank(owner);
+        supporterRewards.withdraw(2_000 * 10 ** 18);
+        assertEq(cmdkToken.balanceOf(address(owner)), 5_000 * 10 ** 18);
+    }
 }
