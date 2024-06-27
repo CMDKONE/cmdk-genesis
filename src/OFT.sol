@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {IOFT, OFTCore} from "@layerzerolabs/lz-evm-oapp-v2/oft/OFTCore.sol";
+import {IOFT, OFTCore} from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/OFTCore.sol";
 
 /**
  * @title OFT Contract

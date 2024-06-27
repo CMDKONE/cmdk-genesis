@@ -15,6 +15,9 @@ import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
  */
 contract CMDKGenesisKit is DN404, Ownable {
     string private _baseURI;
+    string private _contractURI;
+
+    event ContractURIUpdated();
 
     constructor() {
         _initializeOwner(msg.sender);
@@ -32,13 +35,9 @@ contract CMDKGenesisKit is DN404, Ownable {
     }
 
     // TODO: Will all tokens share same metadata?
-    function _tokenURI(
-        uint256 tokenId
-    ) internal view override returns (string memory result) {
+    function _tokenURI(uint256 tokenId) internal view override returns (string memory result) {
         if (bytes(_baseURI).length != 0) {
-            result = string(
-                abi.encodePacked(_baseURI, LibString.toString(tokenId))
-            );
+            result = string(abi.encodePacked(_baseURI, LibString.toString(tokenId)));
         }
     }
 
@@ -46,15 +45,21 @@ contract CMDKGenesisKit is DN404, Ownable {
         _baseURI = baseURI_;
     }
 
-    function setSkipNFTForAddress(
-        address skipAddress,
-        bool skipNFT
-    ) public onlyOwner returns (bool) {
+    function setSkipNFTForAddress(address skipAddress, bool skipNFT) public onlyOwner returns (bool) {
         _setSkipNFT(skipAddress, skipNFT);
         return true;
     }
 
     function withdraw() public onlyOwner {
         SafeTransferLib.safeTransferAllETH(msg.sender);
+    }
+
+    function contractURI() external view returns (string memory) {
+        return _contractURI;
+    }
+
+    function setContractURI(string memory uri) external onlyOwner {
+        _contractURI = uri;
+        emit ContractURIUpdated();
     }
 }

@@ -38,4 +38,16 @@ contract CMDKGenesisKitTest is Test {
         vm.prank(stranger);
         cmdkGenesisKit.setSkipNFTForAddress(stranger, true);
     }
+
+    function test_setContractURI() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setContractURI("theContractURI");
+        assertEq(cmdkGenesisKit.contractURI(), "theContractURI");
+    }
+
+    function test_setContractURI_onlyOwner() public {
+        vm.expectRevert(Ownable.Unauthorized.selector);
+        vm.prank(stranger);
+        cmdkGenesisKit.setContractURI("theContractURI");
+    }
 }

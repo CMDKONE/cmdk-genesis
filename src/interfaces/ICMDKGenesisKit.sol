@@ -8,12 +8,11 @@ interface ICMDKGenesisKit {
 
     function setBaseURI(string calldata baseURI_) external;
 
-    function setSkipNFTForAddress(
-        address skipAddress,
-        bool skipNFT
-    ) external returns (bool);
+    function setSkipNFTForAddress(address skipAddress, bool skipNFT) external returns (bool);
 
     function withdraw() external;
 
     function transfer(address to, uint256 amount) external returns (bool);
+
+    function contractURI() external view returns (string memory);
 }

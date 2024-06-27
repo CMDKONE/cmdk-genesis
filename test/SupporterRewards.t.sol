@@ -23,10 +23,7 @@ contract SupporterRewardsTest is Test {
         supporterToken = new ERC20Mock();
         cmdkToken = new CMDKGenesisKit();
         supporterToken.mint(tokenHolder, 5000);
-        address beacon = Upgrades.deployBeacon(
-            "SupporterRewards.sol:SupporterRewards",
-            owner
-        );
+        address beacon = Upgrades.deployBeacon("SupporterRewards.sol:SupporterRewards", owner);
         uint256 startBurnPrice = 1000;
         uint256 increaseStep = 100;
         supporterRewards = SupporterRewards(
@@ -34,13 +31,7 @@ contract SupporterRewardsTest is Test {
                 beacon,
                 abi.encodeCall(
                     SupporterRewards.initialize,
-                    (
-                        owner,
-                        address(supporterToken),
-                        address(cmdkToken),
-                        startBurnPrice,
-                        increaseStep
-                    )
+                    (owner, address(supporterToken), address(cmdkToken), startBurnPrice, increaseStep)
                 )
             )
         );
@@ -77,12 +68,7 @@ contract SupporterRewardsTest is Test {
 
     function test_setReturnPercentage_onlyOwner() public {
         vm.prank(stranger);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                OwnableUpgradeable.OwnableUnauthorizedAccount.selector,
-                stranger
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger));
         supporterRewards.setPriceIncreaseStep(200);
     }
 
@@ -109,12 +95,7 @@ contract SupporterRewardsTest is Test {
 
     function test_setClaimEnabled_onlyOwner() public {
         vm.prank(stranger);
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                OwnableUpgradeable.OwnableUnauthorizedAccount.selector,
-                stranger
-            )
-        );
+        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger));
         supporterRewards.setClaimEnabled(true);
     }
 
