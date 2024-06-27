@@ -41,6 +41,8 @@ contract CMDKGenesisKitTest is Test {
 
     function test_setContractURI() public {
         vm.prank(owner);
+        vm.expectEmit();
+        emit CMDKGenesisKit.ContractURIUpdated();
         cmdkGenesisKit.setContractURI("theContractURI");
         assertEq(cmdkGenesisKit.contractURI(), "theContractURI");
     }
