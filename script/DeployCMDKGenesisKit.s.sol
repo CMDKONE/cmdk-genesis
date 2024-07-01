@@ -5,7 +5,7 @@ import {Script, console} from "forge-std/Script.sol";
 import {SupporterRewards} from "../src/SupporterRewards.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
 
-contract CMDKGenesisKitScript is Script {
+contract DeployCMDKGenesisKit is Script {
     function run() public {
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
 

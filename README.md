@@ -35,21 +35,33 @@ $ npm run test:logs
 
 ### Deployment
 
+Copy over env var file
+
+```shell
+$ cp .env.example .env
+```
+
+Load the variables in the .env file
+
+```shell
+$ source .env
+```
+
 
 #### Deploy CMDK Token
 
 ```shell
-$ npm run deploy:cmdk
+$ npm run deploy:cmdk:[mainnet or testnet]
 ```
 
 #### Deploy Support Rewards for MODA
 
 ```shell
-$ npm run deploy:modaRewards
+$ npm run deploy:modaRewards:[mainnet or testnet]
 ```
 
 #### Deploy Support Rewards for EMT
 
 ```shell
-$ npm run deploy:emtRewards
+$ npm run deploy:emtRewards:[mainnet or testnet]
 ```
