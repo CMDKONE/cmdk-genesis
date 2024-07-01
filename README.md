@@ -21,6 +21,8 @@ $ npm i
 
 ### Test
 
+[![test](https://github.com/DROPcmdk/cmdk-genesis/actions/workflows/test.yml/badge.svg)](https://github.com/DROPcmdk/cmdk-genesis/actions/workflows/test.yml)
+
 ```shell
 $ npm test
 ```
