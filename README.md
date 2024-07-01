@@ -25,8 +25,29 @@ $ npm i
 $ npm test
 ```
 
-### Deploy Token
+#### With verbose logging
 
 ```shell
-$ npm run deploy:token
+$ npm run test:logs
+```
+
+### Deployment
+
+
+#### Deploy CMDK Token
+
+```shell
+$ npm run deploy:cmdk
+```
+
+#### Deploy Support Rewards for MODA
+
+```shell
+$ npm run deploy:modaRewards
+```
+
+#### Deploy Support Rewards for EMT
+
+```shell
+$ npm run deploy:emtRewards
 ```
