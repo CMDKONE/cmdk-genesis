@@ -4,6 +4,7 @@ pragma solidity 0.8.26;
 import {Test, console} from "forge-std/Test.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
 import {Ownable} from "solady/auth/Ownable.sol";
+import {IERC7572} from "../src/interfaces/IERC7572.sol";
 
 contract CMDKGenesisKitTest is Test {
     CMDKGenesisKit public cmdkGenesisKit;
@@ -42,7 +43,7 @@ contract CMDKGenesisKitTest is Test {
     function test_setContractURI() public {
         vm.prank(owner);
         vm.expectEmit();
-        emit CMDKGenesisKit.ContractURIUpdated();
+        emit IERC7572.ContractURIUpdated();
         cmdkGenesisKit.setContractURI("theContractURI");
         assertEq(cmdkGenesisKit.contractURI(), "theContractURI");
     }

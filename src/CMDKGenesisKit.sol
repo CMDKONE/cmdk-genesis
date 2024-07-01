@@ -32,6 +32,7 @@ import "dn404/DN404Mirror.sol";
 import {Ownable} from "solady/auth/Ownable.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
+import {IERC7572} from "./interfaces/IERC7572.sol";
 
 /**
  * @title CMDK Genesis Kit
@@ -39,11 +40,9 @@ import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
  * When a user has at least one base unit (10^18) amount of tokens, they will automatically receive an NFT.
  * NFTs are minted as an address accumulates each base unit amount of tokens.
  */
-contract CMDKGenesisKit is DN404, Ownable {
+contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
     string private _baseURI;
     string private _contractURI;
-
-    event ContractURIUpdated();
 
     constructor() {
         _initializeOwner(msg.sender);
