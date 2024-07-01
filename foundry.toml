@@ -15,4 +15,15 @@ remappings = [
   "solady/=lib/dn404/lib/solady/src"
 ]
 
+[rpc_endpoints]
+rpcUrl = "${RPC_URL}"
+
+
+[etherscan]
+mumbai = { key = "${ETHERSCAN_API_KEY}" }
+
+[fmt]
+multiline_func_header = "params_first"
+line_length = 105
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
