@@ -8,8 +8,11 @@ import {IERC7572} from "../src/interfaces/IERC7572.sol";
 
 contract CMDKGenesisKitTest is Test {
     CMDKGenesisKit public cmdkGenesisKit;
+    uint256 constant NFT = 10 ** 18;
     address owner = address(1);
-    address stranger = address(1000);
+    address stranger = address(2);
+    address bridgeAddress = address(3);
+    address tokenHolder = address(4);
 
     function setUp() public {
         vm.prank(owner);
@@ -25,13 +28,17 @@ contract CMDKGenesisKitTest is Test {
     }
 
     function test_totalSupply() public view {
-        assertEq(cmdkGenesisKit.totalSupply(), (5_000) * 10 ** 18);
+        assertEq(cmdkGenesisKit.totalSupply(), (5_000) * NFT);
+    }
+
+    function test_balanceOf() public view {
+        assertEq(cmdkGenesisKit.balanceOf(owner), (5_000) * NFT);
     }
 
     function test_setSkipNFTForAddress() public {
         vm.prank(owner);
-        cmdkGenesisKit.setSkipNFTForAddress(stranger, true);
-        assertEq(cmdkGenesisKit.getSkipNFT(stranger), true);
+        cmdkGenesisKit.setSkipNFTForAddress(tokenHolder, true);
+        assertEq(cmdkGenesisKit.getSkipNFT(tokenHolder), true);
     }
 
     function test_setSkipNFTForAddress_onlyOwner() public {
@@ -52,5 +59,47 @@ contract CMDKGenesisKitTest is Test {
         vm.expectRevert(Ownable.Unauthorized.selector);
         vm.prank(stranger);
         cmdkGenesisKit.setContractURI("theContractURI");
+    }
+
+    function test_setBridgeAddress() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+        assertEq(cmdkGenesisKit.bridgeAddress(), bridgeAddress);
+    }
+
+    function test_setBridgeAddress_onlyOwner() public {
+        vm.expectRevert(Ownable.Unauthorized.selector);
+        vm.prank(stranger);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+    }
+
+    function test_mint() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+        vm.prank(bridgeAddress);
+        cmdkGenesisKit.mint(tokenHolder, 1 * NFT);
+        assertEq(cmdkGenesisKit.balanceOf(tokenHolder), 1 * NFT);
+    }
+
+    function test_mint_onlyBridge() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+        vm.expectRevert();
+        cmdkGenesisKit.mint(tokenHolder, 1 * NFT);
+    }
+
+    function test_burn() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+        vm.prank(bridgeAddress);
+        cmdkGenesisKit.burn(owner, 1000 * NFT);
+        assertEq(cmdkGenesisKit.balanceOf(owner), 4000 * NFT);
+    }
+
+    function test_burn_onlyBridge() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+        vm.expectRevert();
+        cmdkGenesisKit.burn(tokenHolder, 1000);
     }
 }

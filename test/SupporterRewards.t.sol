@@ -14,7 +14,7 @@ contract SupporterRewardsTest is Test {
     CMDKGenesisKit public cmdkToken;
     address owner = address(1);
     address tokenHolder = address(2);
-    address stranger = address(1000);
+    address stranger = address(3);
 
     uint256 constant NFT = 10 ** 18;
 
@@ -68,7 +68,9 @@ contract SupporterRewardsTest is Test {
 
     function test_setReturnPercentage_onlyOwner() public {
         vm.prank(stranger);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)
+        );
         supporterRewards.setPriceIncreaseStep(200);
     }
 
@@ -95,7 +97,9 @@ contract SupporterRewardsTest is Test {
 
     function test_setClaimEnabled_onlyOwner() public {
         vm.prank(stranger);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger));
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)
+        );
         supporterRewards.setClaimEnabled(true);
     }
 
