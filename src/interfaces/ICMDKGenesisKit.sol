@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-interface ICMDKGenesisKit {
+import {IERC7572} from "./IERC7572.sol";
+
+interface ICMDKGenesisKit is IERC7572 {
     function name() external pure returns (string memory);
 
     function symbol() external pure returns (string memory);
@@ -14,5 +16,5 @@ interface ICMDKGenesisKit {
 
     function transfer(address to, uint256 amount) external returns (bool);
 
-    function contractURI() external view returns (string memory);
+    function setContractURI(string memory uri) external;
 }

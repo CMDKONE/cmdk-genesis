@@ -14,6 +14,7 @@
       "clean": "forge clean && forge build",
       "test": "npm run clean && forge test",
       "test:logs": "forge test -vvvv",
+      "docs": "forge doc",
       "deploy:cmdk": "forge script script/CMDKGenesisKit.s.sol:CMDKGenesisKit",
       "deploy:modaRewards": "forge script script/ModaRewards.s.sol:ModaRewards",
       "deploy:emtRewards": "forge script script/EmtRewards.s.sol:EmtRewards"

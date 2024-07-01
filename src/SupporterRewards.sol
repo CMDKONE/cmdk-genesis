@@ -13,8 +13,7 @@ import "forge-std/console2.sol";
  * @dev This contract is upgradeable.
  */
 contract SupporterRewards is Initializable, OwnableUpgradeable {
-    address public constant burnAddress =
-        0x000000000000000000000000000000000000dEaD;
+    address public constant burnAddress = 0x000000000000000000000000000000000000dEaD;
     address public supporterToken;
     address public cmdkToken;
     // Updatable after deployment
@@ -37,6 +36,14 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
 
     // External Functions
 
+    /**
+     * @dev Initialize the contract
+     * @param owner The owner of the contract
+     * @param supporterToken_ The token to stake
+     * @param cmdkToken_ The token to receive
+     * @param startBurnPrice_ The initial price to burn
+     * @param increaseStep_ The price increase per NFT allocated
+     */
     function initialize(
         address owner,
         address supporterToken_,
@@ -54,26 +61,44 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
         increaseStep = increaseStep_; // Price increase per NFT allocated
     }
 
+    /**
+     * @dev Set burn price increase rate
+     * @param increaseStep_ The amount to increase by
+     */
     function setPriceIncreaseStep(uint256 increaseStep_) external onlyOwner {
         if (increaseStep_ == 0) revert MustBeNonZero();
         increaseStep = increaseStep_;
     }
 
+    /**
+     * @dev Set claiming open or closed
+     * @param claimEnabled_ The new claim state
+     */
     function setClaimEnabled(bool claimEnabled_) external onlyOwner {
         claimEnabled = claimEnabled_;
     }
 
+    /**
+     * @dev Burn supporterToken to receive CMDKGenesisKit tokens
+     * @param amount The amount of supporterToken to burn
+     */
     function burn(uint256 amount) external {
         if (amount == 0) revert MustBeNonZero();
         IERC20(supporterToken).transferFrom(msg.sender, address(this), amount);
         IERC20(supporterToken).transfer(burnAddress, amount);
         uint256 payout = (amount * 10 ** 18) / getBurnPrice();
         amountAllocated += payout;
-        if (amountAllocated > IERC20(cmdkToken).balanceOf(address(this)))
+        if (amountAllocated > IERC20(cmdkToken).balanceOf(address(this))) {
             revert InsufficientRewards();
+        }
         pendingRewards[msg.sender] += payout;
     }
 
+    /**
+     * @dev Get the allocation for a user
+     * @param user The address of the user to check
+     * @return The allocation for the user
+     */
     function allocation(address user) external view returns (uint256) {
         return pendingRewards[user];
     }
@@ -86,6 +111,10 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
         IERC20(cmdkToken).transfer(msg.sender, amount);
     }
 
+    /**
+     * @dev Owner function to withdraw left over CMDK tokens from the contract
+     * @param amount The amount of CMDK to withdraw
+     */
     function withdraw(uint256 amount) external onlyOwner {
         IERC20(cmdkToken).transfer(owner(), amount);
     }
@@ -94,10 +123,13 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
 
     // Public functions
 
+    /**
+     * @dev Get the current burn price
+     * @return The current burn price
+     */
     function getBurnPrice() public view returns (uint256) {
         return ((amountAllocated * increaseStep) / 10 ** 18) + startBurnPrice;
     }
 
     // Internal functions
-    // ...
 }

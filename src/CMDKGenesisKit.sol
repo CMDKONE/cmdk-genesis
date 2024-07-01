@@ -33,6 +33,7 @@ import {Ownable} from "solady/auth/Ownable.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 import {IERC7572} from "./interfaces/IERC7572.sol";
+import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
 
 /**
  * @title CMDK Genesis Kit
@@ -51,40 +52,67 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
         _initializeDN404(initialTokenSupply, msg.sender, mirror);
     }
 
-    function name() public pure override returns (string memory) {
-        return "CMDK Genesis Kit";
-    }
+    // External Functions
 
-    function symbol() public pure override returns (string memory) {
-        return "$CMK404";
-    }
-
-    // TODO: Will all tokens share same metadata?
-    function _tokenURI(uint256 tokenId) internal view override returns (string memory result) {
-        if (bytes(_baseURI).length != 0) {
-            result = string(abi.encodePacked(_baseURI, LibString.toString(tokenId)));
-        }
-    }
-
-    function setBaseURI(string calldata baseURI_) public onlyOwner {
+    /**
+     * @dev Set the base URI.
+     * @param baseURI_ The base URI to set.
+     */
+    function setBaseURI(string calldata baseURI_) external onlyOwner {
         _baseURI = baseURI_;
     }
 
-    function setSkipNFTForAddress(address skipAddress, bool skipNFT) public onlyOwner returns (bool) {
+    /**
+     * @dev Set address to skip NFT minting for
+     * @param skipAddress Address to skip NFT minting for
+     * @param skipNFT Skip state for address
+     */
+    function setSkipNFTForAddress(address skipAddress, bool skipNFT) external onlyOwner returns (bool) {
         _setSkipNFT(skipAddress, skipNFT);
         return true;
     }
 
-    function withdraw() public onlyOwner {
-        SafeTransferLib.safeTransferAllETH(msg.sender);
-    }
-
+    /// @inheritdoc IERC7572
     function contractURI() external view returns (string memory) {
         return _contractURI;
     }
 
+    /**
+     * @dev Set the contract URI.
+     * @param uri The contract URI to set.
+     */
     function setContractURI(string memory uri) external onlyOwner {
         _contractURI = uri;
         emit ContractURIUpdated();
+    }
+
+    // Private functions
+
+    // Public functions
+
+    /// @inheritdoc DN404
+    function name() public pure override returns (string memory) {
+        return "CMDK Genesis Kit";
+    }
+
+    /// @inheritdoc DN404
+    function symbol() public pure override returns (string memory) {
+        return "$CMK404";
+    }
+
+    /**
+     * @dev Withdraw all ETH from the contract.
+     */
+    function withdraw() public onlyOwner {
+        SafeTransferLib.safeTransferAllETH(msg.sender);
+    }
+
+    // Internal functions
+
+    /// @inheritdoc DN404
+    function _tokenURI(uint256 tokenId) internal view override returns (string memory result) {
+        if (bytes(_baseURI).length != 0) {
+            result = string(abi.encodePacked(_baseURI, LibString.toString(tokenId)));
+        }
     }
 }
