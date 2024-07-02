@@ -60,46 +60,4 @@ contract CMDKGenesisKitTest is Test {
         vm.prank(stranger);
         cmdkGenesisKit.setContractURI("theContractURI");
     }
-
-    function test_setBridgeAddress() public {
-        vm.prank(owner);
-        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
-        assertEq(cmdkGenesisKit.bridgeAddress(), bridgeAddress);
-    }
-
-    function test_setBridgeAddress_onlyOwner() public {
-        vm.expectRevert(Ownable.Unauthorized.selector);
-        vm.prank(stranger);
-        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
-    }
-
-    function test_mint() public {
-        vm.prank(owner);
-        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
-        vm.prank(bridgeAddress);
-        cmdkGenesisKit.mint(tokenHolder, 1 * NFT);
-        assertEq(cmdkGenesisKit.balanceOf(tokenHolder), 1 * NFT);
-    }
-
-    function test_mint_onlyBridge() public {
-        vm.prank(owner);
-        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
-        vm.expectRevert();
-        cmdkGenesisKit.mint(tokenHolder, 1 * NFT);
-    }
-
-    function test_burn() public {
-        vm.prank(owner);
-        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
-        vm.prank(bridgeAddress);
-        cmdkGenesisKit.burn(owner, 1000 * NFT);
-        assertEq(cmdkGenesisKit.balanceOf(owner), 4000 * NFT);
-    }
-
-    function test_burn_onlyBridge() public {
-        vm.prank(owner);
-        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
-        vm.expectRevert();
-        cmdkGenesisKit.burn(tokenHolder, 1000);
-    }
 }

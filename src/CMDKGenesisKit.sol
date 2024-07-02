@@ -53,12 +53,6 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
         _initializeDN404(initialTokenSupply, msg.sender, mirror);
     }
 
-    /// @dev Marks a function as only callable by the bridge.
-    modifier onlyBridge() {
-        require(msg.sender == bridgeAddress);
-        _;
-    }
-
     // External Functions
 
     /**
@@ -85,24 +79,6 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
      */
     function setBridgeAddress(address bridgeAddress_) external onlyOwner {
         bridgeAddress = bridgeAddress_;
-    }
-
-    /**
-     * @dev Bridge function to mint tokens
-     * @param to The address to mint tokens to.
-     * @param amount The amount of tokens to mint.
-     */
-    function mint(address to, uint256 amount) public onlyBridge {
-        _mint(to, amount);
-    }
-
-    /**
-     * @dev Bridge function to burn tokens
-     * @param from The address to burn from.
-     * @param amount The amount of tokens to burn.
-     */
-    function burn(address from, uint256 amount) public onlyBridge {
-        _burn(from, amount);
     }
 
     /// @inheritdoc IERC7572
