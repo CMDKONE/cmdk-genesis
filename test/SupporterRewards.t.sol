@@ -12,6 +12,7 @@ contract SupporterRewardsTest is Test {
     SupporterRewards public supporterRewards;
     ERC20Mock public supporterToken;
     CMDKGenesisKit public cmdkToken;
+    address constant burnAddress = 0x000000000000000000000000000000000000dEaD;
     address owner = address(1);
     address tokenHolder = address(2);
     address stranger = address(3);
@@ -47,6 +48,7 @@ contract SupporterRewardsTest is Test {
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 4000);
         assertEq(supporterRewards.allocation(address(tokenHolder)), 1 * NFT);
+        assertEq(supporterToken.balanceOf(address(burnAddress)), 1000);
     }
 
     function test_burn_priceIncrease() public {
