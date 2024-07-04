@@ -24,8 +24,17 @@ pragma solidity 0.8.26;
         ██║  ██╗██║   ██║                                         
         ╚═╝  ╚═╝╚═╝   ╚═╝                                         
 
+    DROPcmdk is the next-generation digital music protocol, designed to harness the opportunities 
+    that exist within AI and Web3 in the global music industry ecosystem. The Connected Music Protocol 
+    is designed to be music industry-compliant, but aggressively forward-thinking so anyone can launch 
+    a Web3 Connected Music Store and turn followers into superfans.
 
- */
+    web: https://www.dropcmdk.ai/
+    x: https://x.com/dropcmdk
+    github: https://github.com/dropcmdk
+    tg: https://t.me/DROPcmdkportal
+
+*/
 
 import "dn404/DN404.sol";
 import "dn404/DN404Mirror.sol";
@@ -33,6 +42,7 @@ import {Ownable} from "solady/auth/Ownable.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 import {IERC7572} from "./interfaces/IERC7572.sol";
+import {IERC4906} from "./interfaces/IERC4906.sol";
 import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
 
 /**
@@ -41,10 +51,11 @@ import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
  * When a user has at least one base unit (10^18) amount of tokens, they will automatically receive an NFT.
  * NFTs are minted as an address accumulates each base unit amount of tokens.
  */
-contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
+contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
     string private _baseURI;
     string private _contractURI;
     address public bridgeAddress;
+    bool private _singleUri = true;
 
     constructor() {
         _initializeOwner(msg.sender);
@@ -61,6 +72,7 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
      */
     function setBaseURI(string calldata baseURI_) external onlyOwner {
         _baseURI = baseURI_;
+        emit BatchMetadataUpdate(1, (5_000));
     }
 
     /**
@@ -95,6 +107,22 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
         emit ContractURIUpdated();
     }
 
+    /**
+     * @dev Set the metadata to be the same for all tokens.
+     * @param singleUri_ The contract URI to set.
+     */
+    function setSingleUri(bool singleUri_) external onlyOwner {
+        _singleUri = singleUri_;
+    }
+
+    /**
+     * @dev Returns the URI for a given token ID.
+     * @param tokenId The token ID to query.
+     */
+    function tokenURI(uint256 tokenId) external view returns (string memory result) {
+        return _tokenURI(tokenId);
+    }
+
     // Private functions
 
     // Public functions
@@ -118,6 +146,9 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572 {
 
     /// @inheritdoc DN404
     function _tokenURI(uint256 tokenId) internal view override returns (string memory result) {
+        if (_singleUri) {
+            return _baseURI;
+        }
         if (bytes(_baseURI).length != 0) {
             result = string(abi.encodePacked(_baseURI, LibString.toString(tokenId)));
         }

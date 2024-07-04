@@ -12,5 +12,13 @@
         "remappings",
         "sepolia",
         "solady"
-    ]
+    ],
+    "solidity.remappings": [
+        "dn404/=lib/dn404/src/",
+        "forge-std/=lib/forge-std/src/",
+        "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+        "openzeppelin-foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/",
+        "solady/=lib/dn404/lib/solady/src"
+      ]
 }
