@@ -6,12 +6,6 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "forge-std/console2.sol";
 
-/**
- * @title Supporter Rewards
- * @notice Supporter Rewards original supporters of MODA and Emanate
- * Users can stake or burn supporterToken in return for CMDKGenesisKit tokens.
- * @dev This contract is upgradeable.
- */
 contract SupporterRewards is Initializable, OwnableUpgradeable {
     address public constant burnAddress = 0x000000000000000000000000000000000000dEaD;
     address public supporterToken;
@@ -36,14 +30,6 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
 
     // External Functions
 
-    /**
-     * @dev Initialize the contract
-     * @param owner The owner of the contract
-     * @param supporterToken_ The token to stake
-     * @param cmdkToken_ The token to receive
-     * @param startBurnPrice_ The initial price to burn
-     * @param increaseStep_ The price increase per NFT allocated
-     */
     function initialize(
         address owner,
         address supporterToken_,
@@ -62,8 +48,8 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     }
 
     /**
-     * @dev Set burn price increase rate
-     * @param increaseStep_ The amount to increase by
+     * @dev Set the price increase amount
+     * @param increaseStep_ The amount each nft sold increases price
      */
     function setPriceIncreaseStep(uint256 increaseStep_) external onlyOwner {
         if (increaseStep_ == 0) revert MustBeNonZero();
@@ -71,16 +57,16 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     }
 
     /**
-     * @dev Set claiming open or closed
-     * @param claimEnabled_ The new claim state
+     * @dev Set whether or not claiming is enabled
+     * @param claimEnabled_ Whether or not claiming is enabled
      */
     function setClaimEnabled(bool claimEnabled_) external onlyOwner {
         claimEnabled = claimEnabled_;
     }
 
     /**
-     * @dev Burn supporterToken to receive CMDKGenesisKit tokens
-     * @param amount The amount of supporterToken to burn
+     * @dev Burns supporter tokens to get CMDK tokens
+     * @param amount The amount of supporter tokens to burn
      */
     function burn(uint256 amount) external {
         if (amount == 0) revert MustBeNonZero();
@@ -103,6 +89,9 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
         return pendingRewards[user];
     }
 
+    /**
+     * @dev Claim the CMDK if claiming enabled
+     */
     function claim() external {
         if (!claimEnabled) revert ClaimingNotEnabled();
         uint256 amount = pendingRewards[msg.sender];
@@ -112,20 +101,16 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     }
 
     /**
-     * @dev Owner function to withdraw left over CMDK tokens from the contract
-     * @param amount The amount of CMDK to withdraw
+     * @dev Lets owner withdraw CMDK tokens
+     * @param amount The amount of CMDK tokens to withdraw
      */
-    function withdraw(uint256 amount) external onlyOwner {
+    function withdrawCmdk(uint256 amount) external onlyOwner {
         IERC20(cmdkToken).transfer(owner(), amount);
     }
 
-    // Private functions
-
-    // Public functions
-
     /**
-     * @dev Get the current burn price
-     * @return The current burn price
+     * @dev Get the price to claim 1 CMDK token
+     * @return The price
      */
     function getBurnPrice() public view returns (uint256) {
         return ((amountAllocated * increaseStep) / 10 ** 18) + startBurnPrice;

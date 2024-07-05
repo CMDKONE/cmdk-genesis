@@ -15,13 +15,13 @@
       "test": "npm run clean && forge test",
       "test:logs": "forge test -vvvv",
       "docs": "forge doc",
+      "deploy:testTokens": "forge script script/DeployTestTokens.s.sol:DeployTestTokens --rpc-url sepolia --broadcast --verify -vvvv",
       "deploy:cmdk:testnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url sepolia --broadcast --verify -vvvv",
       "deploy:modaRewards:testnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url sepolia --broadcast --verify -vvvv",
       "deploy:emtRewards:testnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url sepolia --broadcast --verify -vvvv",
       "deploy:cmdk:mainnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url mainnet --broadcast --verify -vvvv",
       "deploy:modaRewards:mainnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url mainnet --broadcast --verify -vvvv",
       "deploy:emtRewards:mainnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url mainnet --broadcast --verify -vvvv"
-
     }
   }
   

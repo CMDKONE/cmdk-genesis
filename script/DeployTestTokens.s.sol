@@ -12,7 +12,7 @@ contract SupporterToken is ERC20 {
     }
 }
 
-contract DeployTestnet is Script {
+contract DeployTestTokens is Script {
     function run() public {
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         vm.startBroadcast(privateKey);
