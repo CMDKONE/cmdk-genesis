@@ -18,8 +18,8 @@ contract DeployEmtRewards is Script {
 
         address beacon = Upgrades.deployBeacon("SupporterRewards.sol:SupporterRewards", deployerAddress);
 
-        uint256 startBurnPrice = 1000;
-        uint256 increaseStep = 100;
+        uint256 startBurnPrice = 1000 ether;
+        uint256 increaseStep = 100 ether;
 
         SupporterRewards supporterRewards = SupporterRewards(
             Upgrades.deployBeaconProxy(
