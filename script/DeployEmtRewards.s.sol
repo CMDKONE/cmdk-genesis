@@ -18,7 +18,7 @@ contract DeployEmtRewards is Script {
 
         address beacon = Upgrades.deployBeacon("SupporterRewards.sol:SupporterRewards", deployerAddress);
 
-        uint256 startBurnPrice = 1000 ether;
+        uint256 startBurnPrice = 1_000 ether;
         uint256 increaseStep = 100 ether;
 
         SupporterRewards supporterRewards = SupporterRewards(
@@ -32,7 +32,7 @@ contract DeployEmtRewards is Script {
         );
 
         ICMDKGenesisKit(cmdkToken).setSkipNFTForAddress(address(supporterRewards), true);
-        ICMDKGenesisKit(cmdkToken).transfer(address(supporterRewards), 500 * 10 ** 18);
+        ICMDKGenesisKit(cmdkToken).transfer(address(supporterRewards), 500 ether);
 
         console2.log("EMT SupporterRewards deployed at:", address(supporterRewards));
 

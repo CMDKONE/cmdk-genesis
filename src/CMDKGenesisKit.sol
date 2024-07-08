@@ -3,37 +3,21 @@ pragma solidity 0.8.26;
 
 /*
 
-        ██████╗███╗   ███╗██████╗ ██╗  ██╗                       
-        ██╔════╝████╗ ████║██╔══██╗██║ ██╔╝                       
-        ██║     ██╔████╔██║██║  ██║█████╔╝                        
-        ██║     ██║╚██╔╝██║██║  ██║██╔═██╗                        
-        ╚██████╗██║ ╚═╝ ██║██████╔╝██║  ██╗                       
-        ╚═════╝╚═╝     ╚═╝╚═════╝ ╚═╝  ╚═╝                       
-                                                                
-        ██████╗ ███████╗███╗   ██╗███████╗███████╗██╗███████╗    
-        ██╔════╝ ██╔════╝████╗  ██║██╔════╝██╔════╝██║██╔════╝    
-        ██║  ███╗█████╗  ██╔██╗ ██║█████╗  ███████╗██║███████╗    
-        ██║   ██║██╔══╝  ██║╚██╗██║██╔══╝  ╚════██║██║╚════██║    
-        ╚██████╔╝███████╗██║ ╚████║███████╗███████║██║███████║    
-        ╚═════╝ ╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝╚══════╝    
-                                                                
-        ██╗  ██╗██╗████████╗                                      
-        ██║ ██╔╝██║╚══██╔══╝                                      
-        █████╔╝ ██║   ██║                                         
-        ██╔═██╗ ██║   ██║                                         
-        ██║  ██╗██║   ██║                                         
-        ╚═╝  ╚═╝╚═╝   ╚═╝                                         
+  ___ __  __ ____ _  _     __   ___   __            
+ / __|  \/  |  _ ( )/ )   /. | / _ \ /. |           
+( (__ )    ( )(_) )  (   (_  _| (_) |_  _)          
+ \___|_/\/\_|____(_)\_)_ __(_)_\___/ _(_)  
+                                                                                  
+                                                                                                                                                                 
+Welcome to the Connected Music Development Kit - the next-generation digital music protocol, designed to harness the opportunities that exist within AI and Web3 for the global music industry ecosystem. These CMDK Genesis Kits will grant you inside access to eco-system pre-launch, attracting more access, utility and rewards as described in the documentation. Each 404 tokens is fractionally tradable on a DEX and each whole token converts into an NFT in your wallet. Tokens and NFTs will soon be bridgeable to other chains and will play a role in the validation and curation of the Connected Music Network.
 
-    DROPcmdk is the next-generation digital music protocol, designed to harness the opportunities 
-    that exist within AI and Web3 in the global music industry ecosystem. The Connected Music Protocol 
-    is designed to be music industry-compliant, but aggressively forward-thinking so anyone can launch 
-    a Web3 Connected Music Store and turn followers into superfans.
+At the time of contract deployment, the following links are official:
 
-    web: https://www.dropcmdk.ai/
-    x: https://x.com/dropcmdk
-    github: https://github.com/dropcmdk
-    tg: https://t.me/DROPcmdkportal
-
+tg: https://t.me/DROPcmdkportal
+web: https://dropcmdk.ai/
+x: https://x.com/dropcmdk
+github: https://github.com/dropcmdk
+    
 */
 
 import "dn404/DN404.sol";
@@ -54,7 +38,6 @@ import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
 contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
     string private _baseURI;
     string private _contractURI;
-    address public bridgeAddress;
     bool private _singleUri = true;
 
     constructor() {
@@ -72,7 +55,7 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
      */
     function setBaseURI(string calldata baseURI_) external onlyOwner {
         _baseURI = baseURI_;
-        emit BatchMetadataUpdate(1, (5_000));
+        emit BatchMetadataUpdate(1, 5_000);
     }
 
     /**
@@ -83,14 +66,6 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
     function setSkipNFTForAddress(address skipAddress, bool skipNFT) external onlyOwner returns (bool) {
         _setSkipNFT(skipAddress, skipNFT);
         return true;
-    }
-
-    /**
-     * @dev Set the bridge address.
-     * @param bridgeAddress_ The bridge address to set.
-     */
-    function setBridgeAddress(address bridgeAddress_) external onlyOwner {
-        bridgeAddress = bridgeAddress_;
     }
 
     /// @inheritdoc IERC7572

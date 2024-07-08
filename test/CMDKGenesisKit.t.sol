@@ -13,8 +13,7 @@ contract CMDKGenesisKitTest is Test {
     uint256 constant NFT = 10 ** 18;
     address owner = address(1);
     address stranger = address(2);
-    address bridgeAddress = address(3);
-    address tokenHolder = address(4);
+    address tokenHolder = address(3);
 
     function setUp() public {
         vm.prank(owner);
