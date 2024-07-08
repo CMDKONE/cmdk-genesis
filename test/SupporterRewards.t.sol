@@ -60,6 +60,20 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterToken.balanceOf(address(burnAddress)), 1_000 ether);
     }
 
+    function test_setStartBurnPrice() public {
+        vm.prank(owner);
+        supporterRewards.setStartBurnPrice(200 ether);
+        assertEq(supporterRewards.startBurnPrice(), 200 ether);
+    }
+
+    function test_setStartBurnPrice_onlyOwner() public {
+        vm.prank(stranger);
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)
+        );
+        supporterRewards.setStartBurnPrice(200 ether);
+    }
+
     function test_burn_priceIncrease() public {
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 3_300 ether);
@@ -77,7 +91,7 @@ contract SupporterRewardsTest is Test {
         );
     }
 
-    function test_setReturnPercentage_onlyOwner() public {
+    function test_setPriceIncreaseStep_onlyOwner() public {
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)
@@ -159,5 +173,15 @@ contract SupporterRewardsTest is Test {
             abi.encodeCall(SupporterRewardsV2.initializeV2, ())
         );
         assertEq(SupporterRewardsV2(rewardsProxyAddress).version(), 2);
+    }
+
+    function test_burn_InsufficientRewards() public {
+        vm.startPrank(owner);
+        supporterRewards.withdrawCmdk(2_000 ether - 1);
+        vm.startPrank(tokenHolder);
+        supporterToken.approve(address(supporterRewards), 1_000 ether);
+        vm.expectRevert(SupporterRewards.InsufficientRewards.selector);
+        supporterRewards.burn(1_000 ether);
+        vm.stopPrank();
     }
 }

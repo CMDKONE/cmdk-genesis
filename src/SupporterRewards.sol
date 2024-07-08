@@ -48,6 +48,15 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     }
 
     /**
+     * @dev Set the start burn price cost
+     * @param startBurnPrice_ The amount the first NFT costs
+     */
+    function setStartBurnPrice(uint256 startBurnPrice_) external onlyOwner {
+        if (startBurnPrice_ == 0) revert MustBeNonZero();
+        startBurnPrice = startBurnPrice_;
+    }
+
+    /**
      * @dev Set the price increase amount
      * @param increaseStep_ The amount each nft sold increases price
      */
