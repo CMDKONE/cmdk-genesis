@@ -3,6 +3,7 @@ pragma solidity 0.8.26;
 
 import {Test, console} from "forge-std/Test.sol";
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import {ISupporterRewards} from "../src/interfaces/ISupporterRewards.sol";
 import {SupporterRewards} from "../src/SupporterRewards.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
 import {ERC20Mock} from "./mocks/ERC20Mock.sol";
@@ -53,6 +54,8 @@ contract SupporterRewardsTest is Test {
     function test_burn() public {
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 1_000 ether);
+        vm.expectEmit();
+        emit ISupporterRewards.TokensAllocated(1 * NFT);
         supporterRewards.burn(1_000 ether);
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 4_000 ether);
@@ -115,7 +118,7 @@ contract SupporterRewardsTest is Test {
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 1_000 ether);
         supporterRewards.burn(1_000 ether);
-        vm.expectRevert(SupporterRewards.ClaimingNotEnabled.selector);
+        vm.expectRevert(ISupporterRewards.ClaimingNotEnabled.selector);
         supporterRewards.claim();
         vm.stopPrank();
     }
@@ -154,7 +157,7 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 4_000 ether);
         assertEq(supporterRewards.allocation(address(tokenHolder)), 0);
         assertEq(cmdkToken.balanceOf(address(tokenHolder)), 1 * NFT);
-        vm.expectRevert(SupporterRewards.MustBeNonZero.selector);
+        vm.expectRevert(ISupporterRewards.MustBeNonZero.selector);
         supporterRewards.claim();
     }
 
@@ -180,7 +183,7 @@ contract SupporterRewardsTest is Test {
         supporterRewards.withdrawCmdk(2_000 ether - 1);
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 1_000 ether);
-        vm.expectRevert(SupporterRewards.InsufficientRewards.selector);
+        vm.expectRevert(ISupporterRewards.InsufficientRewards.selector);
         supporterRewards.burn(1_000 ether);
         vm.stopPrank();
     }

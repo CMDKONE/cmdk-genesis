@@ -4,9 +4,9 @@ pragma solidity 0.8.26;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "forge-std/console2.sol";
+import {ISupporterRewards} from "./interfaces/ISupporterRewards.sol";
 
-contract SupporterRewards is Initializable, OwnableUpgradeable {
+contract SupporterRewards is ISupporterRewards, Initializable, OwnableUpgradeable {
     address public constant burnAddress = 0x000000000000000000000000000000000000dEaD;
     address public supporterToken;
     address public cmdkToken;
@@ -17,11 +17,6 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
     mapping(address => uint256) pendingRewards;
     uint256 public amountAllocated;
     // End of version 1 storage
-
-    error MustBeNonZero();
-    error InsufficientRewards();
-    error AddressCannotBeZero();
-    error ClaimingNotEnabled();
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -87,6 +82,8 @@ contract SupporterRewards is Initializable, OwnableUpgradeable {
             revert InsufficientRewards();
         }
         pendingRewards[msg.sender] += payout;
+
+        emit TokensAllocated(payout);
     }
 
     /**
