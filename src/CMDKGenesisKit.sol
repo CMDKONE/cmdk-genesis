@@ -45,6 +45,8 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
         uint96 initialTokenSupply = (5_000) * 10 ** 18;
         address mirror = address(new DN404Mirror(msg.sender));
         _initializeDN404(initialTokenSupply, msg.sender, mirror);
+        _contractURI = "ipfs://QmZgzS1kd7gBsp7tzGtV9bvEJe93bHGFqnDfjXsPdLWfks";
+        emit ContractURIUpdated();
     }
 
     // External Functions
