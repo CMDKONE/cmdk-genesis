@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import {Script, console2} from "forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 import {SupporterRewards} from "../src/SupporterRewards.sol";
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
@@ -16,15 +16,14 @@ contract DeployEmtRewards is Script {
 
         vm.startBroadcast(privateKey);
 
-        address beacon = Upgrades.deployBeacon("SupporterRewards.sol:SupporterRewards", owner);
-
         uint256 startBurnPrice = 1_000 ether;
         uint256 increaseStep = 100 ether;
         uint256 totalAllocation = 500 ether;
 
-        SupporterRewards supporterRewards = SupporterRewards(
-            Upgrades.deployBeaconProxy(
-                beacon,
+        SupporterRewards modaRewards = SupporterRewards(
+            Upgrades.deployTransparentProxy(
+                "SupporterRewards.sol",
+                owner,
                 abi.encodeCall(
                     SupporterRewards.initialize,
                     (
@@ -39,7 +38,7 @@ contract DeployEmtRewards is Script {
             )
         );
 
-        console2.log("EMT SupporterRewards deployed at:", address(supporterRewards));
+        console.log("EMT SupporterRewards deployed at:", address(supporterRewards));
 
         vm.stopBroadcast();
     }
