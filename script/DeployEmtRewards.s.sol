@@ -9,30 +9,35 @@ import {ICMDKGenesisKit} from "../src/interfaces/ICMDKGenesisKit.sol";
 
 contract DeployEmtRewards is Script {
     function run() public {
-        address deployerAddress = vm.envAddress("DEPLOYER_ADDRESS");
+        address owner = vm.envAddress("DEPLOYER_ADDRESS");
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
+        address stakingContract = vm.envAddress("STAKING_CONTRACT");
         address supporterToken = vm.envAddress("EMT_TOKEN");
-        address cmdkToken = vm.envAddress("CMDK_TOKEN");
 
         vm.startBroadcast(privateKey);
 
-        address beacon = Upgrades.deployBeacon("SupporterRewards.sol:SupporterRewards", deployerAddress);
+        address beacon = Upgrades.deployBeacon("SupporterRewards.sol:SupporterRewards", owner);
 
         uint256 startBurnPrice = 1_000 ether;
         uint256 increaseStep = 100 ether;
+        uint256 totalAllocation = 500 ether;
 
         SupporterRewards supporterRewards = SupporterRewards(
             Upgrades.deployBeaconProxy(
                 beacon,
                 abi.encodeCall(
                     SupporterRewards.initialize,
-                    (deployerAddress, supporterToken, cmdkToken, startBurnPrice, increaseStep)
+                    (
+                        owner,
+                        supporterToken,
+                        startBurnPrice,
+                        increaseStep,
+                        totalAllocation,
+                        stakingContract
+                    )
                 )
             )
         );
-
-        ICMDKGenesisKit(cmdkToken).setSkipNFTForAddress(address(supporterRewards), true);
-        ICMDKGenesisKit(cmdkToken).transfer(address(supporterRewards), 500 ether);
 
         console2.log("EMT SupporterRewards deployed at:", address(supporterRewards));
 
