@@ -9,12 +9,7 @@ pragma solidity 0.8.26;
  \___|_/\/\_|____(_)\_)_ __(_)_\___/ _(_)
 
                                                                                                                                                                                                                                          
-Welcome to the Connected Music Development Kit - the next-generation digital music protocol, designed to harness the 
-opportunities that exist within AI and Web3 for the global music industry ecosystem. These CMDK Genesis Kits will 
-grant you inside access to eco-system pre-launch, attracting more access, utility and rewards as described in the 
-documentation. Each 404 tokens is fractionally tradable on a DEX and each whole token converts into an NFT in your 
-wallet. Tokens and NFTs will soon be bridgeable to other chains and will play a role in the validation and curation 
-of the Connected Music Network.
+Welcome to the Connected Music Development Kit - the next-generation digital music protocol, designed to harness the opportunities that exist within AI and Web3 for the global music industry ecosystem. These CMDK Genesis Kits will grant you inside access to eco-system pre-launch, attracting more access, utility and rewards as described in the documentation. Each 404 tokens is fractionally tradable on a DEX and each whole token converts into an NFT in your wallet. Tokens and NFTs will soon be bridgeable to other chains and will play a role in the validation and curation of the Connected Music Network.
 
 At the time of contract deployment, the following links are official:
 
@@ -26,8 +21,6 @@ github: https://github.com/dropcmdk
 */
 
 import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
-// import {IERC7572} from "./interfaces/IERC7572.sol";
-// import {IERC4906} from "./interfaces/IERC4906.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {ERC404} from "erc404/contracts/ERC404.sol";
@@ -40,7 +33,7 @@ import {ERC404} from "erc404/contracts/ERC404.sol";
  */
 contract CMDKGenesisKit is ICMDKGenesisKit, Ownable, ERC404 {
     string private _baseURI;
-    string private _contractURI = "ipfs://QmZgzS1kd7gBsp7tzGtV9bvEJe93bHGFqnDfjXsPdLWfks";
+    string private _contractURI;
     bool private _singleUri = true;
 
     constructor(address owner_) ERC404("CMDK Genesis Kit", "$CMK404", 18) Ownable(owner_) {
