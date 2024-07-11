@@ -1,9 +1,8 @@
-dn404/=lib/dn404/src/
+erc404/=lib/erc404/
 forge-std/=lib/forge-std/src/
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
 openzeppelin-foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/
-solady/=lib/dn404/lib/solady/src/
 ds-test/=lib/openzeppelin-contracts-upgradeable/lib/forge-std/lib/ds-test/src/
 erc4626-tests/=lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests/
 openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/

@@ -11,8 +11,6 @@ import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
 import {ERC20Mock} from "./mocks/ERC20Mock.sol";
 import {StakingRewardsV2} from "./mocks/StakingRewardsV2.sol";
 import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
-import {AccessControlUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 contract StakingRewardsTest is Test {
     StakingRewards public stakingRewards;
@@ -67,13 +65,13 @@ contract StakingRewardsTest is Test {
         vm.startPrank(owner);
         supporterToken = new ERC20Mock();
         supporterToken.mint(tokenHolder, 5_000 ether);
-        cmdkToken = new CMDKGenesisKit();
+        cmdkToken = new CMDKGenesisKit(owner);
         cmdkToken.transfer(tokenHolder, 10 * NFT);
         stakingRewards = helper_deployStakingRewards(address(cmdkToken));
         supporterRewards =
             helper_deploySupporterRewards(address(supporterToken), address(stakingRewards));
         stakingRewards.grantRole(SUPPORTER_ROLE, address(supporterRewards));
-        cmdkToken.setSkipNFTForAddress(address(stakingRewards), true);
+        cmdkToken.setERC721TransferExempt(address(stakingRewards), true);
         cmdkToken.transfer(address(stakingRewards), 2_000 * NFT);
         vm.stopPrank();
     }

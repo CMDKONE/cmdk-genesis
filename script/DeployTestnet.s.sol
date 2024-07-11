@@ -24,7 +24,7 @@ contract DeployTestnet is Script {
         // Tokens
         SupporterToken modaToken = new SupporterToken("MODA", "MODA");
         SupporterToken emtToken = new SupporterToken("EMT", "EMT");
-        CMDKGenesisKit cmdkGenesisKit = new CMDKGenesisKit();
+        CMDKGenesisKit cmdkGenesisKit = new CMDKGenesisKit(owner);
 
         // Staking Contract
         StakingRewards stakingRewards = StakingRewards(

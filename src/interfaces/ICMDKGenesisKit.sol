@@ -7,9 +7,7 @@ import {IERC4906} from "./IERC4906.sol";
 interface ICMDKGenesisKit is IERC7572, IERC4906 {
     function setBaseURI(string calldata baseURI_) external;
 
-    function setSkipNFTForAddress(address skipAddress, bool skipNFT) external returns (bool);
-
-    function withdraw() external;
+    function setERC721TransferExempt(address target_, bool state_) external;
 
     function setContractURI(string memory uri) external;
 }

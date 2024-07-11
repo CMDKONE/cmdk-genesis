@@ -6,10 +6,15 @@ pragma solidity 0.8.26;
   ___ __  __ ____ _  _     __   ___   __            
  / __|  \/  |  _ ( )/ )   /. | / _ \ /. |           
 ( (__ )    ( )(_) )  (   (_  _| (_) |_  _)          
- \___|_/\/\_|____(_)\_)_ __(_)_\___/ _(_)  
-                                                                                  
-                                                                                                                                                                 
-Welcome to the Connected Music Development Kit - the next-generation digital music protocol, designed to harness the opportunities that exist within AI and Web3 for the global music industry ecosystem. These CMDK Genesis Kits will grant you inside access to eco-system pre-launch, attracting more access, utility and rewards as described in the documentation. Each 404 tokens is fractionally tradable on a DEX and each whole token converts into an NFT in your wallet. Tokens and NFTs will soon be bridgeable to other chains and will play a role in the validation and curation of the Connected Music Network.
+ \___|_/\/\_|____(_)\_)_ __(_)_\___/ _(_)
+
+                                                                                                                                                                                                                                         
+Welcome to the Connected Music Development Kit - the next-generation digital music protocol, designed to harness the 
+opportunities that exist within AI and Web3 for the global music industry ecosystem. These CMDK Genesis Kits will 
+grant you inside access to eco-system pre-launch, attracting more access, utility and rewards as described in the 
+documentation. Each 404 tokens is fractionally tradable on a DEX and each whole token converts into an NFT in your 
+wallet. Tokens and NFTs will soon be bridgeable to other chains and will play a role in the validation and curation 
+of the Connected Music Network.
 
 At the time of contract deployment, the following links are official:
 
@@ -20,14 +25,12 @@ github: https://github.com/dropcmdk
     
 */
 
-import "dn404/DN404.sol";
-import "dn404/DN404Mirror.sol";
-import {Ownable} from "solady/auth/Ownable.sol";
-import {LibString} from "solady/utils/LibString.sol";
-import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
-import {IERC7572} from "./interfaces/IERC7572.sol";
-import {IERC4906} from "./interfaces/IERC4906.sol";
+// import {IERC7572} from "./interfaces/IERC7572.sol";
+// import {IERC4906} from "./interfaces/IERC4906.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {ERC404} from "erc404/contracts/ERC404.sol";
 
 /**
  * @title CMDK Genesis Kit
@@ -35,16 +38,15 @@ import {IERC4906} from "./interfaces/IERC4906.sol";
  * When a user has at least one base unit (10^18) amount of tokens, they will automatically receive an NFT.
  * NFTs are minted as an address accumulates each base unit amount of tokens.
  */
-contract CMDKGenesisKit is ICMDKGenesisKit, DN404, Ownable {
+contract CMDKGenesisKit is ICMDKGenesisKit, Ownable, ERC404 {
     string private _baseURI;
     string private _contractURI = "ipfs://QmZgzS1kd7gBsp7tzGtV9bvEJe93bHGFqnDfjXsPdLWfks";
     bool private _singleUri = true;
 
-    constructor() {
-        _initializeOwner(msg.sender);
-        uint96 initialTokenSupply = (5_000) * 10 ** 18;
-        address mirror = address(new DN404Mirror(msg.sender));
-        _initializeDN404(initialTokenSupply, msg.sender, mirror);
+    constructor(address owner_) ERC404("CMDK Genesis Kit", "$CMK404", 18) Ownable(owner_) {
+        // Do not mint the ERC721s to the initial owner, as it's a waste of gas.
+        _setERC721TransferExempt(owner_, true);
+        _mintERC20(owner_, 5_000 * units);
     }
 
     // External Functions
@@ -60,12 +62,11 @@ contract CMDKGenesisKit is ICMDKGenesisKit, DN404, Ownable {
 
     /**
      * @dev Set address to skip NFT minting for
-     * @param skipAddress Address to skip NFT minting for
-     * @param skipNFT Skip state for address
+     * @param target_ Address to skip NFT minting for
+     * @param state_ Skip state for address
      */
-    function setSkipNFTForAddress(address skipAddress, bool skipNFT) external onlyOwner returns (bool) {
-        _setSkipNFT(skipAddress, skipNFT);
-        return true;
+    function setERC721TransferExempt(address target_, bool state_) external onlyOwner {
+        _setERC721TransferExempt(target_, state_);
     }
 
     /**
@@ -89,22 +90,15 @@ contract CMDKGenesisKit is ICMDKGenesisKit, DN404, Ownable {
 
     // Public functions
 
-    /// @inheritdoc DN404
-    function name() public pure override returns (string memory) {
-        return "CMDK Genesis Kit";
-    }
-
-    /// @inheritdoc DN404
-    function symbol() public pure override returns (string memory) {
-        return "$CMK404";
-    }
-
     /**
      * @dev Returns the URI for a given token ID.
      * @param tokenId The token ID to query.
      */
-    function tokenURI(uint256 tokenId) public view returns (string memory result) {
-        return _tokenURI(tokenId);
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        if (_singleUri) {
+            return _baseURI;
+        }
+        return string.concat(_baseURI, Strings.toString(tokenId));
     }
 
     /**
@@ -115,20 +109,5 @@ contract CMDKGenesisKit is ICMDKGenesisKit, DN404, Ownable {
         return _contractURI;
     }
 
-    /// @dev Withdraw all ETH from the contract.
-    function withdraw() public onlyOwner {
-        SafeTransferLib.safeTransferAllETH(msg.sender);
-    }
-
     // Internal functions
-
-    /// @inheritdoc DN404
-    function _tokenURI(uint256 tokenId) internal view override returns (string memory result) {
-        if (_singleUri) {
-            return _baseURI;
-        }
-        if (bytes(_baseURI).length != 0) {
-            result = string(abi.encodePacked(_baseURI, LibString.toString(tokenId)));
-        }
-    }
 }
