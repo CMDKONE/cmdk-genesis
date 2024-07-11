@@ -20,7 +20,7 @@ contract DeployModaRewards is Script {
         uint256 increaseStep = 100 ether;
         uint256 totalAllocation = 2_000 ether;
 
-        SupporterRewards modaRewards = SupporterRewards(
+        SupporterRewards supporterRewards = SupporterRewards(
             Upgrades.deployTransparentProxy(
                 "SupporterRewards.sol",
                 owner,
