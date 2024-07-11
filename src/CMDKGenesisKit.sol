@@ -25,9 +25,9 @@ import "dn404/DN404Mirror.sol";
 import {Ownable} from "solady/auth/Ownable.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
+import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
 import {IERC7572} from "./interfaces/IERC7572.sol";
 import {IERC4906} from "./interfaces/IERC4906.sol";
-import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
 
 /**
  * @title CMDK Genesis Kit
@@ -35,9 +35,9 @@ import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
  * When a user has at least one base unit (10^18) amount of tokens, they will automatically receive an NFT.
  * NFTs are minted as an address accumulates each base unit amount of tokens.
  */
-contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
+contract CMDKGenesisKit is ICMDKGenesisKit, DN404, Ownable {
     string private _baseURI;
-    string private _contractURI;
+    string private _contractURI = "ipfs://QmZgzS1kd7gBsp7tzGtV9bvEJe93bHGFqnDfjXsPdLWfks";
     bool private _singleUri = true;
 
     constructor() {
@@ -68,11 +68,6 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
         return true;
     }
 
-    /// @inheritdoc IERC7572
-    function contractURI() external view returns (string memory) {
-        return _contractURI;
-    }
-
     /**
      * @dev Set the contract URI.
      * @param uri The contract URI to set.
@@ -90,14 +85,6 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
         _singleUri = singleUri_;
     }
 
-    /**
-     * @dev Returns the URI for a given token ID.
-     * @param tokenId The token ID to query.
-     */
-    function tokenURI(uint256 tokenId) external view returns (string memory result) {
-        return _tokenURI(tokenId);
-    }
-
     // Private functions
 
     // Public functions
@@ -110,6 +97,22 @@ contract CMDKGenesisKit is DN404, Ownable, IERC7572, IERC4906 {
     /// @inheritdoc DN404
     function symbol() public pure override returns (string memory) {
         return "$CMK404";
+    }
+
+    /**
+     * @dev Returns the URI for a given token ID.
+     * @param tokenId The token ID to query.
+     */
+    function tokenURI(uint256 tokenId) public view returns (string memory result) {
+        return _tokenURI(tokenId);
+    }
+
+    /**
+     * @dev Returns the metadata URI for the contract.
+     * @return The uri to the contract metadata.
+     */
+    function contractURI() public view returns (string memory) {
+        return _contractURI;
     }
 
     /// @dev Withdraw all ETH from the contract.
