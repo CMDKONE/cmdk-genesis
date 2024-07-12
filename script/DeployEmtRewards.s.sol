@@ -5,7 +5,6 @@ import {Script, console} from "forge-std/Script.sol";
 import {SupporterRewards} from "../src/SupporterRewards.sol";
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
-import {ICMDKGenesisKit} from "../src/interfaces/ICMDKGenesisKit.sol";
 
 contract DeployEmtRewards is Script {
     function run() public {

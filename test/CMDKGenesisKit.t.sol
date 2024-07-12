@@ -5,7 +5,7 @@ import {Test, console} from "forge-std/Test.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC7572} from "../src/interfaces/IERC7572.sol";
-import {IERC4906} from "../src/interfaces/IERC4906.sol";
+import {IERC4906} from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 
 contract CMDKGenesisKitTest is Test {
     CMDKGenesisKit public cmdkGenesisKit;

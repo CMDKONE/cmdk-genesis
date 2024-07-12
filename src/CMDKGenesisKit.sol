@@ -20,7 +20,8 @@ github: https://github.com/dropcmdk
     
 */
 
-import {ICMDKGenesisKit} from "./interfaces/ICMDKGenesisKit.sol";
+import {IERC4906} from "./interfaces/IERC4906.sol";
+import {IERC7572} from "./interfaces/IERC7572.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {ERC404} from "erc404/contracts/ERC404.sol";
@@ -31,7 +32,7 @@ import {ERC404} from "erc404/contracts/ERC404.sol";
  * When a user has at least one base unit (10^18) amount of tokens, they will automatically receive an NFT.
  * NFTs are minted as an address accumulates each base unit amount of tokens.
  */
-contract CMDKGenesisKit is ICMDKGenesisKit, Ownable, ERC404 {
+contract CMDKGenesisKit is Ownable, ERC404, IERC4906, IERC7572 {
     string private _baseURI;
     string private _contractURI;
     bool private _singleUri = true;
