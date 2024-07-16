@@ -1,27 +1,28 @@
 {
-    "name": "cmdk-genesis-kit",
-    "license": "MIT",
-    "version": "0.0.19",
-    "description": "CMDK Genesis Kit",
-    "files": [
-      "src/**/*.sol"
-    ],
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/-/cmdk-genesis-kit.git"
-    },
-    "scripts": {
-      "clean": "forge clean && forge build",
-      "test": "npm run clean && forge test",
-      "test:logs": "forge test -vvvv",
-      "docs": "forge doc",
-      "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url sepolia --broadcast --verify -vvvv",
-      "deploy:cmdk:testnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url sepolia --broadcast --verify -vvvv",
-      "deploy:modaRewards:testnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url sepolia --broadcast --verify -vvvv",
-      "deploy:emtRewards:testnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url sepolia --broadcast --verify -vvvv",
-      "deploy:cmdk:mainnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url mainnet --broadcast --verify -vvvv",
-      "deploy:modaRewards:mainnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url mainnet --broadcast --verify -vvvv",
-      "deploy:emtRewards:mainnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url mainnet --broadcast --verify -vvvv"
-    }
+  "name": "cmdk-genesis-kit",
+  "license": "MIT",
+  "version": "0.0.19",
+  "description": "CMDK Genesis Kit",
+  "files": [
+    "src/**/*.sol"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/-/cmdk-genesis-kit.git"
+  },
+  "scripts": {
+    "clean": "forge clean && forge build",
+    "test": "npm run clean && forge test",
+    "test:logs": "forge test -vvvv",
+    "docs": "forge doc",
+    "scan:install": "docker pull mythril/myth",
+    "scan:CMDKGenesisKit": "docker run -it --platform linux/amd64 -v $(pwd):/tmp mythril/myth analyze /tmp/src/CMDKGenesisKit.sol --solc-json /tmp/mythril.config.json",
+    "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url sepolia --broadcast --verify -vvvv",
+    "deploy:cmdk:testnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url sepolia --broadcast --verify -vvvv",
+    "deploy:modaRewards:testnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url sepolia --broadcast --verify -vvvv",
+    "deploy:emtRewards:testnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url sepolia --broadcast --verify -vvvv",
+    "deploy:cmdk:mainnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url mainnet --broadcast --verify -vvvv",
+    "deploy:modaRewards:mainnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url mainnet --broadcast --verify -vvvv",
+    "deploy:emtRewards:mainnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url mainnet --broadcast --verify -vvvv"
   }
-  
+}

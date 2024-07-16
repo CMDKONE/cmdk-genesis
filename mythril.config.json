@@ -1,0 +1,18 @@
+{
+    "remappings": [
+        "erc404/=/tmp/lib/erc404/",
+        "forge-std/=/tmp/lib/forge-std/src/",
+        "@openzeppelin/contracts/=/tmp/lib/openzeppelin-contracts/contracts/",
+        "@openzeppelin/contracts-upgradeable/=/tmp/lib/openzeppelin-contracts-upgradeable/contracts/",
+        "openzeppelin-foundry-upgrades/=/tmp/lib/openzeppelin-foundry-upgrades/src/",
+        "ds-test/=/tmp/lib/openzeppelin-contracts-upgradeable/lib/forge-std/lib/ds-test/src/",
+        "erc4626-tests/=/tmp/lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests/",
+        "openzeppelin-contracts-upgradeable/=/tmp/lib/openzeppelin-contracts-upgradeable/",
+        "openzeppelin-contracts/=/tmp/lib/openzeppelin-contracts/",
+        "solidity-stringutils/=/tmp/lib/openzeppelin-foundry-upgrades/lib/solidity-stringutils/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    }
+  }
