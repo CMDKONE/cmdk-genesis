@@ -1,6 +1,6 @@
 # CMDK Genesis Kits
 
-The CMDK Genesis Kit tokens are extended from the [DN404](https://github.com/vectorized/dn404.git) implementation.
+The CMDK Genesis Kit tokens are extended from the [ERC404](https://github.com/Pandora-Labs-Org/erc404) implementation.
 
 Burning of EMT and MODA is done through the use of the SupporterRewards contract.
 An instance per token is created. Rewards can be adjusted as needed.
