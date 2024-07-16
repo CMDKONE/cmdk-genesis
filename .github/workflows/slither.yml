@@ -4,8 +4,26 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: foundry-rs/foundry-toolchain@v1
-      - uses: crytic/slither-action@v0.4.0
-        with:
-          target: 'src/CMDKGenesisKit.sol'
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+          with:
+            submodules: recursive
+
+        - name: Install Foundry
+          uses: foundry-rs/foundry-toolchain@v1
+          with:
+            version: nightly
+
+        - name: Install dependencies
+          run: forge install
+
+        - name: Run Forge build
+          run: |
+            forge --version
+            forge build --sizes
+          id: build
+
+        - name: Run Slither
+          uses: crytic/slither-action@v0.4.0
+          with:
+            target: 'src/'
