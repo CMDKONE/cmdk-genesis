@@ -15,8 +15,6 @@
     "test": "npm run clean && forge test",
     "test:logs": "forge test -vvvv",
     "docs": "forge doc",
-    "scan:install": "docker pull mythril/myth",
-    "scan:CMDKGenesisKit": "docker run -d --platform linux/amd64 -v $(pwd):/tmp mythril/myth analyze /tmp/src/CMDKGenesisKit.sol --solc-json /tmp/mythril.config.json",
     "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url sepolia --broadcast --verify -vvvv",
     "deploy:cmdk:testnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url sepolia --broadcast --verify -vvvv",
     "deploy:modaRewards:testnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url sepolia --broadcast --verify -vvvv",

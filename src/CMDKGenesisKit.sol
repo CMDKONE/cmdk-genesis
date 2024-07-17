@@ -33,9 +33,12 @@ import {ERC404} from "erc404/ERC404.sol";
  * NFTs are minted as an address accumulates each base unit amount of tokens.
  */
 contract CMDKGenesisKit is Ownable, ERC404, IERC4906, IERC7572 {
+    error AddressCannotBeZero();
+
     string private _baseURI;
     string private _contractURI;
     bool private _singleUri = true;
+    address public bridgeAddress;
 
     constructor(address owner_) ERC404("CMDK Genesis Kit", "$CMK404", 18) Ownable(owner_) {
         // Do not mint the ERC721s to the initial owner, as it's a waste of gas.
@@ -78,6 +81,15 @@ contract CMDKGenesisKit is Ownable, ERC404, IERC4906, IERC7572 {
      */
     function setSingleUri(bool singleUri_) external onlyOwner {
         _singleUri = singleUri_;
+    }
+
+    /**
+     * @dev Set the address of the omnibridge contract
+     * @param bridgeAddress_ The new bridge address
+     */
+    function setBridgeAddress(address bridgeAddress_) external onlyOwner {
+        if (bridgeAddress_ == address(0)) revert AddressCannotBeZero();
+        bridgeAddress = bridgeAddress_;
     }
 
     // Private functions

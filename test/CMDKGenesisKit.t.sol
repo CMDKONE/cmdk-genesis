@@ -14,24 +14,16 @@ contract CMDKGenesisKitTest is Test {
     address owner = address(1);
     address stranger = address(2);
     address tokenHolder = address(3);
+    address bridgeAddress = address(4);
 
     function setUp() public {
         cmdkGenesisKit = new CMDKGenesisKit(owner);
     }
 
-    function test_name() public view {
+    function test_setup() public view {
         assertEq(cmdkGenesisKit.name(), "CMDK Genesis Kit");
-    }
-
-    function test_symbol() public view {
         assertEq(cmdkGenesisKit.symbol(), "$CMK404");
-    }
-
-    function test_totalNfts() public view {
         assertEq(cmdkGenesisKit.totalSupply(), totalNfts * NFT);
-    }
-
-    function test_balanceOf() public view {
         assertEq(cmdkGenesisKit.balanceOf(owner), totalNfts * NFT);
     }
 
@@ -81,6 +73,18 @@ contract CMDKGenesisKitTest is Test {
         emit IERC7572.ContractURIUpdated();
         cmdkGenesisKit.setContractURI("theContractURI");
         assertEq(cmdkGenesisKit.contractURI(), "theContractURI");
+    }
+
+    function test_setBridgeAddress_onlyOwner() public {
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
+        vm.prank(stranger);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+    }
+
+    function test_setBridgeAddress() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+        assertEq(cmdkGenesisKit.bridgeAddress(), bridgeAddress);
     }
 
     function test_setContractURI_onlyOwner() public {

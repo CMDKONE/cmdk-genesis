@@ -25,9 +25,13 @@ interface IStakingRewards {
 
     function setClaimEnabled(bool claimEnabled_) external;
 
-    function usersStakeCount(address user) external view returns (uint256 count);
+    function usersStakeCount(address user_) external view returns (uint256 count);
 
-    function usersStake(address user, uint256 count) external view returns (Stake memory stake);
+    function usersStake(address user_, uint256 count) external view returns (Stake memory stake);
+
+    function userCount() external view returns (uint256 count);
+
+    function user(uint256 index) external view returns (address usersAddress);
 
     function claimAll() external;
 }
