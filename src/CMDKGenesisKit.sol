@@ -24,7 +24,7 @@ import {IERC4906} from "./interfaces/IERC4906.sol";
 import {IERC7572} from "./interfaces/IERC7572.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {ERC404} from "erc404/contracts/ERC404.sol";
+import {ERC404} from "erc404/ERC404.sol";
 
 /**
  * @title CMDK Genesis Kit
