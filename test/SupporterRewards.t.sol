@@ -68,17 +68,8 @@ contract SupporterRewardsTest is Test {
         stakingRewards = helper_deployStakingRewards(address(cmdkToken));
         supporterRewards =
             helper_deploySupporterRewards(address(supporterToken), address(stakingRewards));
-<<<<<<< Updated upstream
-        stakingRewards.grantRole(SUPPORTER_ROLE, address(supporterRewards));
-<<<<<<< Updated upstream
-        cmdkToken.setERC721TransferExempt(address(stakingRewards), true);
-=======
-        cmdkToken.setSkipNFTForAddress(address(stakingRewards), true);
-=======
         stakingRewards.grantRole(BURNER_ROLE, address(supporterRewards));
         cmdkToken.setERC721TransferExempt(address(stakingRewards), true);
->>>>>>> Stashed changes
->>>>>>> Stashed changes
         cmdkToken.transfer(address(stakingRewards), 2_000 * NFT);
         vm.stopPrank();
     }
