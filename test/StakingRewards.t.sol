@@ -11,8 +11,6 @@ import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
 import {ERC20Mock} from "./mocks/ERC20Mock.sol";
 import {StakingRewardsV2} from "./mocks/StakingRewardsV2.sol";
 import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
-import {AccessControlUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 contract StakingRewardsTest is Test {
     StakingRewards public stakingRewards;
@@ -27,7 +25,8 @@ contract StakingRewardsTest is Test {
 
     address owner = address(1);
     address tokenHolder = address(2);
-    address stranger = address(3);
+    address anotherTokenHolder = address(3);
+    address stranger = address(4);
 
     function helper_deployStakingRewards(address cmdkTokenAddress) internal returns (StakingRewards) {
         rewardsProxyAddress = Upgrades.deployTransparentProxy(
@@ -67,13 +66,15 @@ contract StakingRewardsTest is Test {
         vm.startPrank(owner);
         supporterToken = new ERC20Mock();
         supporterToken.mint(tokenHolder, 5_000 ether);
-        cmdkToken = new CMDKGenesisKit();
+        supporterToken.mint(anotherTokenHolder, 5_000 ether);
+        cmdkToken = new CMDKGenesisKit(owner);
         cmdkToken.transfer(tokenHolder, 10 * NFT);
+        cmdkToken.transfer(anotherTokenHolder, 10 * NFT);
         stakingRewards = helper_deployStakingRewards(address(cmdkToken));
         supporterRewards =
             helper_deploySupporterRewards(address(supporterToken), address(stakingRewards));
         stakingRewards.grantRole(SUPPORTER_ROLE, address(supporterRewards));
-        cmdkToken.setSkipNFTForAddress(address(stakingRewards), true);
+        cmdkToken.setERC721TransferExempt(address(stakingRewards), true);
         cmdkToken.transfer(address(stakingRewards), 2_000 * NFT);
         vm.stopPrank();
     }
@@ -93,6 +94,25 @@ contract StakingRewardsTest is Test {
         assertEq(cmdkToken.balanceOf(tokenHolder), 9 * NFT);
         IStakingRewards.Stake memory stake = stakingRewards.usersStake(tokenHolder, 0);
         assertEq(stake.amount, 1 * NFT);
+    }
+
+    function test_userCount() public {
+        vm.startPrank(tokenHolder);
+        cmdkToken.approve(address(stakingRewards), 1 * NFT);
+        stakingRewards.stakeTokens(1 * NFT);
+        vm.stopPrank();
+        uint256 numUsers = stakingRewards.userCount();
+        assertEq(numUsers, 1);
+        address firstUser = stakingRewards.user(0);
+        assertEq(firstUser, tokenHolder);
+        vm.startPrank(anotherTokenHolder);
+        cmdkToken.approve(address(stakingRewards), 1 * NFT);
+        stakingRewards.stakeTokens(1 * NFT);
+        vm.stopPrank();
+        numUsers = stakingRewards.userCount();
+        assertEq(numUsers, 2);
+        address secondUser = stakingRewards.user(1);
+        assertEq(secondUser, anotherTokenHolder);
     }
 
     function test_stakeInternal_onlyRole() public {

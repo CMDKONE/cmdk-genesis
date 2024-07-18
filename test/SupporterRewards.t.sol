@@ -64,12 +64,12 @@ contract SupporterRewardsTest is Test {
         vm.startPrank(owner);
         supporterToken = new ERC20Mock();
         supporterToken.mint(tokenHolder, 5_000 ether);
-        cmdkToken = new CMDKGenesisKit();
+        cmdkToken = new CMDKGenesisKit(owner);
         stakingRewards = helper_deployStakingRewards(address(cmdkToken));
         supporterRewards =
             helper_deploySupporterRewards(address(supporterToken), address(stakingRewards));
         stakingRewards.grantRole(SUPPORTER_ROLE, address(supporterRewards));
-        cmdkToken.setSkipNFTForAddress(address(stakingRewards), true);
+        cmdkToken.setERC721TransferExempt(address(stakingRewards), true);
         cmdkToken.transfer(address(stakingRewards), 2_000 * NFT);
         vm.stopPrank();
     }
@@ -78,7 +78,6 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterRewards.supporterToken(), address(supporterToken));
         assertEq(supporterRewards.startBurnPrice(), 1_000 ether);
         assertEq(supporterRewards.increaseStep(), 100 ether);
-        assertEq(supporterRewards.claimEnabled(), false);
         assertEq(supporterRewards.amountAllocated(), 0);
     }
 
@@ -97,6 +96,8 @@ contract SupporterRewardsTest is Test {
 
     function test_setStartBurnPrice() public {
         vm.prank(owner);
+        vm.expectEmit();
+        emit ISupporterRewards.StartBurnPriceSet(200 ether);
         supporterRewards.setStartBurnPrice(200 ether);
         assertEq(supporterRewards.startBurnPrice(), 200 ether);
     }
@@ -146,6 +147,8 @@ contract SupporterRewardsTest is Test {
 
     function test_setPriceIncreaseStep() public {
         vm.prank(owner);
+        vm.expectEmit();
+        emit ISupporterRewards.PriceIncreaseStepSet(1 ether);
         supporterRewards.setPriceIncreaseStep(1 ether);
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 2001 ether);

@@ -6,6 +6,9 @@ interface ISupporterRewards {
     error InsufficientRewards();
     error AddressCannotBeZero();
 
+    event StartBurnPriceSet(uint256 startBurnPrice_);
+    event PriceIncreaseStepSet(uint256 increaseStep_);
+
     function initialize(
         address owner,
         address supporterToken_,

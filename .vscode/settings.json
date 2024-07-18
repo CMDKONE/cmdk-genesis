@@ -1,29 +1,23 @@
 {
-    "solidity.compileUsingRemoteVersion": "v0.8.26+commit.8a97fa7a",
-    "editor.formatOnSave": true,
-    "solidity.packageDefaultDependenciesContractsDirectory": "src",
-    "solidity.packageDefaultDependenciesDirectory": "lib",
-    "[solidity]": {
-        "editor.defaultFormatter": "JuanBlanco.solidity" 
-    },
-    "solidity.formatter": "forge",
-    "cSpell.words": [
-        "cmdk",
-        "remappings",
-        "sepolia",
-        "solady"
-    ],
-    "solidity.remappings": [
-        "dn404/=lib/dn404/src/",
-        "forge-std/=lib/forge-std/src/",
-        "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-        "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
-        "openzeppelin-foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/",
-        "solady/=lib/dn404/lib/solady/src/",
-        "ds-test/=lib/openzeppelin-contracts-upgradeable/lib/forge-std/lib/ds-test/src/",
-        "erc4626-tests/=lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests/",
-        "openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
-        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
-        "solidity-stringutils/=lib/openzeppelin-foundry-upgrades/lib/solidity-stringutils/"
-      ]
+  "solidity.compileUsingRemoteVersion": "v0.8.26+commit.8a97fa7a",
+  "editor.formatOnSave": true,
+  "solidity.packageDefaultDependenciesContractsDirectory": "src",
+  "solidity.packageDefaultDependenciesDirectory": "lib",
+  "[solidity]": {
+    "editor.defaultFormatter": "JuanBlanco.solidity"
+  },
+  "solidity.formatter": "forge",
+  "cSpell.words": ["cmdk", "remappings", "sepolia"],
+  "solidity.remappings": [
+    "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "ds-test/=lib/openzeppelin-contracts-upgradeable/lib/forge-std/lib/ds-test/src/",
+    "erc404/=lib/erc404/contracts/",
+    "erc4626-tests/=lib/openzeppelin-contracts-upgradeable/lib/erc4626-tests/",
+    "forge-std/=lib/forge-std/src/",
+    "openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/",
+    "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+    "openzeppelin-foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/",
+    "solidity-stringutils/=lib/openzeppelin-foundry-upgrades/lib/solidity-stringutils/"
+  ]
 }

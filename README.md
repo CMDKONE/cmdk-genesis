@@ -1,13 +1,17 @@
 # CMDK Genesis Kits
 
-The CMDK Genesis Kit tokens are extended from the [DN404](https://github.com/vectorized/dn404.git) implementation.
+![drop-case](drop-case.jpg)
 
-Burning of EMT and MODA is done through the use of the SupporterRewards contract.
-An instance per token is created. Rewards can be adjusted as needed.
+The CMDK Genesis Kit tokens are extended from the [ERC404](https://github.com/Pandora-Labs-Org/erc404) implementation.
+
+* CMDKGenesisKit
+    * The ERC404 token
+* SupportersRewards
+    * The base contract to burn MODA or EMT
+* StakingRewards
+    * The contract where the CMDKGenesisKit tokens are staked
 
 Burn Cost is adjusted after each burn using the linear equation with the gradient calculated by the amount of cmdk kits allocated multiplied by the step amount.
-
-These contracts will be first deployed on Ethereum and then bridged using Layer Zero and Arbitrum Bridge.
 
 Code style follows [Natspec](https://docs.soliditylang.org/en/latest/style-guide.html)
 
@@ -32,6 +36,13 @@ $ npm test
 ```shell
 $ npm run test:logs
 ```
+
+### Security Scans
+
+[![Slither Analysis](https://github.com/DROPcmdk/cmdk-genesis-kit/actions/workflows/slither.yml/badge.svg)](https://github.com/DROPcmdk/cmdk-genesis-kit/actions/workflows/slither.yml)
+
+Security scanning is done via the Slither gitaction. Vulnerabilities can be viewed [here](https://github.com/DROPcmdk/cmdk-genesis-kit/security/code-scanning).
+
 
 ### Deployment
 

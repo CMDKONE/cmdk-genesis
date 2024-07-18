@@ -1,13 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from
     "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IStakingRewards} from "./interfaces/IStakingRewards.sol";
 
-contract StakingRewards is IStakingRewards, Initializable, AccessControlUpgradeable {
+contract StakingRewards is
+    IStakingRewards,
+    Initializable,
+    AccessControlUpgradeable,
+    ReentrancyGuardUpgradeable
+{
+    using SafeERC20 for IERC20;
+
     bytes32 public constant SUPPORTER_ROLE = keccak256("SUPPORTER_ROLE");
 
     address public cmdkToken;
@@ -27,6 +36,9 @@ contract StakingRewards is IStakingRewards, Initializable, AccessControlUpgradea
 
     function initialize(address owner, address cmdkToken_) external initializer {
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
+        if (owner == address(0) || cmdkToken_ == address(0)) {
+            revert AddressCannotBeZero();
+        }
         cmdkToken = cmdkToken_;
     }
 
@@ -34,8 +46,8 @@ contract StakingRewards is IStakingRewards, Initializable, AccessControlUpgradea
      * @dev Stake CMDK tokens
      * @param amount The amount to stake
      */
-    function stakeTokens(uint256 amount) external {
-        IERC20(cmdkToken).transferFrom(msg.sender, address(this), amount);
+    function stakeTokens(uint256 amount) external nonReentrant {
+        IERC20(cmdkToken).safeTransferFrom(msg.sender, address(this), amount);
         createStakedEntry(msg.sender, amount);
     }
 
@@ -57,26 +69,26 @@ contract StakingRewards is IStakingRewards, Initializable, AccessControlUpgradea
 
     /**
      * @dev Get the number of stakes for a user
-     * @param user The address of the user to check
+     * @param user_ The address of the user to check
      * @return count The count of stakes for the user
      */
-    function usersStakeCount(address user) external view returns (uint256 count) {
-        return usersStakes[user].length;
+    function usersStakeCount(address user_) external view returns (uint256 count) {
+        return usersStakes[user_].length;
     }
 
     /**
      * @dev Get the staked data for a user
-     * @param user The address of the user to check
+     * @param user_ The address of the user to check
      * @return stake The staked data for the user
      */
-    function usersStake(address user, uint256 stakeIndex) external view returns (Stake memory stake) {
-        return usersStakes[user][stakeIndex];
+    function usersStake(address user_, uint256 index) external view returns (Stake memory stake) {
+        return usersStakes[user_][index];
     }
 
     /**
      * @dev Claim the CMDK if claiming enabled
      */
-    function claimAll() external {
+    function claimAll() external nonReentrant {
         if (!claimEnabled) revert ClaimingNotEnabled();
 
         uint256 count = usersStakes[msg.sender].length;
@@ -91,8 +103,24 @@ contract StakingRewards is IStakingRewards, Initializable, AccessControlUpgradea
         }
 
         if (totalAmount == 0) revert MustBeNonZero();
-        IERC20(cmdkToken).transfer(msg.sender, totalAmount);
+        IERC20(cmdkToken).safeTransfer(msg.sender, totalAmount);
         emit TokensClaimed(totalAmount);
+    }
+
+    /**
+     * @dev Returns the number of unique stakers
+     * @param count The number of unique stakers
+     */
+    function userCount() external view returns (uint256 count) {
+        return _stakers.length;
+    }
+
+    /**
+     * @dev Returns the address of a staker
+     * @param usersAddress The address of the user at a given index
+     */
+    function user(uint256 index) external view returns (address usersAddress) {
+        return _stakers[index];
     }
 
     // Internal functions

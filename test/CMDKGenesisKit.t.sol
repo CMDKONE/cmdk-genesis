@@ -3,9 +3,9 @@ pragma solidity 0.8.26;
 
 import {Test, console} from "forge-std/Test.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
-import {Ownable} from "solady/auth/Ownable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC7572} from "../src/interfaces/IERC7572.sol";
-import {IERC4906} from "../src/interfaces/IERC4906.sol";
+import {IERC4906} from "@openzeppelin/contracts/interfaces/IERC4906.sol";
 
 contract CMDKGenesisKitTest is Test {
     CMDKGenesisKit public cmdkGenesisKit;
@@ -14,38 +14,29 @@ contract CMDKGenesisKitTest is Test {
     address owner = address(1);
     address stranger = address(2);
     address tokenHolder = address(3);
+    address bridgeAddress = address(4);
 
     function setUp() public {
-        vm.prank(owner);
-        cmdkGenesisKit = new CMDKGenesisKit();
+        cmdkGenesisKit = new CMDKGenesisKit(owner);
     }
 
-    function test_name() public view {
+    function test_setup() public view {
         assertEq(cmdkGenesisKit.name(), "CMDK Genesis Kit");
-    }
-
-    function test_symbol() public view {
         assertEq(cmdkGenesisKit.symbol(), "$CMK404");
-    }
-
-    function test_totalNfts() public view {
         assertEq(cmdkGenesisKit.totalSupply(), totalNfts * NFT);
-    }
-
-    function test_balanceOf() public view {
         assertEq(cmdkGenesisKit.balanceOf(owner), totalNfts * NFT);
     }
 
-    function test_setSkipNFTForAddress() public {
+    function test_setERC721TransferExempt() public {
         vm.prank(owner);
-        cmdkGenesisKit.setSkipNFTForAddress(tokenHolder, true);
-        assertEq(cmdkGenesisKit.getSkipNFT(tokenHolder), true);
+        cmdkGenesisKit.setERC721TransferExempt(tokenHolder, true);
+        assertEq(cmdkGenesisKit.erc721TransferExempt(tokenHolder), true);
     }
 
-    function test_setSkipNFTForAddress_onlyOwner() public {
-        vm.expectRevert(Ownable.Unauthorized.selector);
+    function test_setERC721TransferExempt_onlyOwner() public {
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
-        cmdkGenesisKit.setSkipNFTForAddress(stranger, true);
+        cmdkGenesisKit.setERC721TransferExempt(stranger, true);
     }
 
     function test_setBaseURI() public {
@@ -57,7 +48,7 @@ contract CMDKGenesisKitTest is Test {
     }
 
     function test_setBaseURI_onlyOwner() public {
-        vm.expectRevert(Ownable.Unauthorized.selector);
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
         cmdkGenesisKit.setBaseURI("theBaseURI");
     }
@@ -71,7 +62,7 @@ contract CMDKGenesisKitTest is Test {
     }
 
     function test_setSingleUri_onlyOwner() public {
-        vm.expectRevert(Ownable.Unauthorized.selector);
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
         cmdkGenesisKit.setSingleUri(false);
     }
@@ -84,8 +75,20 @@ contract CMDKGenesisKitTest is Test {
         assertEq(cmdkGenesisKit.contractURI(), "theContractURI");
     }
 
+    function test_setBridgeAddress_onlyOwner() public {
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
+        vm.prank(stranger);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+    }
+
+    function test_setBridgeAddress() public {
+        vm.prank(owner);
+        cmdkGenesisKit.setBridgeAddress(bridgeAddress);
+        assertEq(cmdkGenesisKit.bridgeAddress(), bridgeAddress);
+    }
+
     function test_setContractURI_onlyOwner() public {
-        vm.expectRevert(Ownable.Unauthorized.selector);
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
         cmdkGenesisKit.setContractURI("theContractURI");
     }
