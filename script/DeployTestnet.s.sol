@@ -71,8 +71,8 @@ contract DeployTestnet is Script {
             )
         );
         // Grant roles for staking
-        stakingRewards.grantRole(keccak256("SUPPORTER_ROLE"), address(modaRewards));
-        stakingRewards.grantRole(keccak256("SUPPORTER_ROLE"), address(emtRewards));
+        stakingRewards.grantRole(keccak256("BURNER_ROLE"), address(modaRewards));
+        stakingRewards.grantRole(keccak256("BURNER_ROLE"), address(emtRewards));
 
         console.log("MODA Token deployed at:", address(modaToken));
         console.log("EMT Token deployed at:", address(emtToken));

@@ -20,7 +20,7 @@ contract StakingRewardsTest is Test {
     address rewardsProxyAddress;
     address constant burnAddress = 0x000000000000000000000000000000000000dEaD;
     uint256 constant NFT = 10 ** 18;
-    bytes32 constant SUPPORTER_ROLE = keccak256("SUPPORTER_ROLE");
+    bytes32 constant BURNER_ROLE = keccak256("BURNER_ROLE");
     bytes32 constant DEFAULT_ADMIN_ROLE = 0x00;
 
     address owner = address(1);
@@ -73,8 +73,17 @@ contract StakingRewardsTest is Test {
         stakingRewards = helper_deployStakingRewards(address(cmdkToken));
         supporterRewards =
             helper_deploySupporterRewards(address(supporterToken), address(stakingRewards));
+<<<<<<< Updated upstream
         stakingRewards.grantRole(SUPPORTER_ROLE, address(supporterRewards));
+<<<<<<< Updated upstream
         cmdkToken.setERC721TransferExempt(address(stakingRewards), true);
+=======
+        cmdkToken.setSkipNFTForAddress(address(stakingRewards), true);
+=======
+        stakingRewards.grantRole(BURNER_ROLE, address(supporterRewards));
+        cmdkToken.setERC721TransferExempt(address(stakingRewards), true);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         cmdkToken.transfer(address(stakingRewards), 2_000 * NFT);
         vm.stopPrank();
     }
@@ -119,7 +128,7 @@ contract StakingRewardsTest is Test {
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, SUPPORTER_ROLE
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, BURNER_ROLE
             )
         );
         stakingRewards.stakeInternalTokens(stranger, 1 * NFT);

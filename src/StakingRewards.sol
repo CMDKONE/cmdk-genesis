@@ -17,7 +17,7 @@ contract StakingRewards is
 {
     using SafeERC20 for IERC20;
 
-    bytes32 public constant SUPPORTER_ROLE = keccak256("SUPPORTER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     address public cmdkToken;
     // Updatable after deployment
@@ -35,10 +35,10 @@ contract StakingRewards is
     // External Functions
 
     function initialize(address owner, address cmdkToken_) external initializer {
-        _grantRole(DEFAULT_ADMIN_ROLE, owner);
         if (owner == address(0) || cmdkToken_ == address(0)) {
             revert AddressCannotBeZero();
         }
+        _grantRole(DEFAULT_ADMIN_ROLE, owner);
         cmdkToken = cmdkToken_;
     }
 
@@ -55,7 +55,7 @@ contract StakingRewards is
      * @dev Stake CMDK tokens internally
      * @param amount The amount to stake
      */
-    function stakeInternalTokens(address staker, uint256 amount) external onlyRole(SUPPORTER_ROLE) {
+    function stakeInternalTokens(address staker, uint256 amount) external onlyRole(BURNER_ROLE) {
         createStakedEntry(staker, amount);
     }
 
