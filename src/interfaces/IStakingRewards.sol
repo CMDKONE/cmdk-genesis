@@ -7,6 +7,7 @@ interface IStakingRewards {
     error AddressCannotBeZero();
     error ClaimingNotEnabled();
     error Unauthorized();
+    error TransferFailed();
 
     event TokensStaked(uint256 amount);
     event TokensClaimed(uint256 amount);

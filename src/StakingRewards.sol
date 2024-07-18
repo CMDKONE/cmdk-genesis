@@ -5,8 +5,7 @@ import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from
     "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC404} from "erc404/interfaces/IERC404.sol";
 import {IStakingRewards} from "./interfaces/IStakingRewards.sol";
 
 contract StakingRewards is
@@ -15,8 +14,6 @@ contract StakingRewards is
     AccessControlUpgradeable,
     ReentrancyGuardUpgradeable
 {
-    using SafeERC20 for IERC20;
-
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     address public cmdkToken;
@@ -47,7 +44,8 @@ contract StakingRewards is
      * @param amount The amount to stake
      */
     function stakeTokens(uint256 amount) external nonReentrant {
-        IERC20(cmdkToken).safeTransferFrom(msg.sender, address(this), amount);
+        bool success = IERC404(cmdkToken).erc20TransferFrom(msg.sender, address(this), amount);
+        if (!success) revert TransferFailed();
         createStakedEntry(msg.sender, amount);
     }
 
@@ -103,7 +101,8 @@ contract StakingRewards is
         }
 
         if (totalAmount == 0) revert MustBeNonZero();
-        IERC20(cmdkToken).safeTransfer(msg.sender, totalAmount);
+        bool success = IERC404(cmdkToken).transfer(msg.sender, totalAmount);
+        if (!success) revert TransferFailed();
         emit TokensClaimed(totalAmount);
     }
 
