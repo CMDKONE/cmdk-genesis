@@ -11,6 +11,7 @@ interface IStakingRewards {
 
     event TokensStaked(uint256 amount);
     event TokensClaimed(uint256 amount);
+    event TokensWithdrawn(uint256 amount);
 
     struct Stake {
         uint256 amount;
@@ -33,6 +34,8 @@ interface IStakingRewards {
     function userCount() external view returns (uint256 count);
 
     function user(uint256 index) external view returns (address usersAddress);
+
+    function withdrawTokens(uint256 amount) external;
 
     function claimAll() external;
 }
