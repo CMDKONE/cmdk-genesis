@@ -79,6 +79,7 @@ contract DeployTestnet is Script {
         console.log("CMDK Genesis Kit deployed at:", address(cmdkGenesisKit));
         console.log("MODA SupporterRewards deployed at:", address(modaRewards));
         console.log("EMT SupporterRewards deployed at:", address(emtRewards));
+        console.log("StakingRewards deployed at:", address(stakingRewards));
 
         vm.stopBroadcast();
     }
