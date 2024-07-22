@@ -102,7 +102,7 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterRewards.startBurnPrice(), 200 ether);
     }
 
-    function test_setStartBurnPrice_onlyOwner() public {
+    function test_setStartBurnPrice_onlyOwner_revert() public {
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)
@@ -137,7 +137,7 @@ contract SupporterRewardsTest is Test {
         );
     }
 
-    function test_setPriceIncreaseStep_onlyOwner() public {
+    function test_setPriceIncreaseStep_onlyOwner_revert() public {
         vm.prank(stranger);
         vm.expectRevert(
             abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)

@@ -33,7 +33,7 @@ contract CMDKGenesisKitTest is Test {
         assertEq(cmdkGenesisKit.erc721TransferExempt(tokenHolder), true);
     }
 
-    function test_setERC721TransferExempt_onlyOwner() public {
+    function test_setERC721TransferExempt_onlyOwner_revert() public {
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
         cmdkGenesisKit.setERC721TransferExempt(stranger, true);
@@ -47,7 +47,7 @@ contract CMDKGenesisKitTest is Test {
         assertEq(cmdkGenesisKit.tokenURI(1), "theBaseURI");
     }
 
-    function test_setBaseURI_onlyOwner() public {
+    function test_setBaseURI_onlyOwner_revert() public {
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
         cmdkGenesisKit.setBaseURI("theBaseURI");
@@ -75,7 +75,7 @@ contract CMDKGenesisKitTest is Test {
         assertEq(cmdkGenesisKit.contractURI(), "theContractURI");
     }
 
-    function test_setBridgeAddress_onlyOwner() public {
+    function test_setBridgeAddress_onlyOwner_revert() public {
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
         cmdkGenesisKit.setBridgeAddress(bridgeAddress);
@@ -87,7 +87,7 @@ contract CMDKGenesisKitTest is Test {
         assertEq(cmdkGenesisKit.bridgeAddress(), bridgeAddress);
     }
 
-    function test_setContractURI_onlyOwner() public {
+    function test_setContractURI_onlyOwner_revert() public {
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, stranger));
         vm.prank(stranger);
         cmdkGenesisKit.setContractURI("theContractURI");
