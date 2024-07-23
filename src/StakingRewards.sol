@@ -127,9 +127,9 @@ contract StakingRewards is
      * @param amount The amount to withdraw
      */
     function withdrawTokens(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        emit TokensWithdrawn(amount);
         bool success = IERC404(cmdkToken).transfer(msg.sender, amount);
         if (!success) revert TransferFailed();
-        emit TokensWithdrawn(amount);
     }
 
     // Internal functions
