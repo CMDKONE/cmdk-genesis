@@ -6,10 +6,12 @@ import {IERC404} from "erc404/interfaces/IERC404.sol";
 
 contract TestnetFaucet {
     function getERC20Tokens(address tokenAddress, uint256 amount) external {
-        IERC20(tokenAddress).transfer(msg.sender, amount);
+        bool success = IERC20(tokenAddress).transfer(msg.sender, amount);
+        if (!success) revert TransferFailed();
     }
 
     function getERC404Tokens(address tokenAddress, uint256 amount) external {
-        IERC404(tokenAddress).transfer(msg.sender, amount);
+        bool success = IERC404(tokenAddress).transfer(msg.sender, amount);
+        if (!success) revert TransferFailed();
     }
 }
