@@ -28,5 +28,9 @@ interface ISupporterRewards {
 
     function burnSupporterToken(uint256 amount) external;
 
+    function stakeSupporterToken(uint256 amount) external;
+
     function getBurnCost() external view returns (uint256);
+
+    function getStakeCost() external view returns (uint256);
 }
