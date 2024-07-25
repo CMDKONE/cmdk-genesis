@@ -84,8 +84,8 @@ contract SupporterRewards is
 
     function setInitialStakeCost(uint256 initialCost_) external onlyOwner {
         if (initialCost_ == 0) revert MustBeNonZero();
-        initialBurnCost = initialCost_;
-        emit InitialBurnCostSet(initialCost_);
+        initialStakeCost = initialCost_;
+        emit InitialStakeCostSet(initialCost_);
     }
 
     /**
@@ -95,7 +95,7 @@ contract SupporterRewards is
     function setStakeCostIncrement(uint256 costIncrement_) external onlyOwner {
         if (costIncrement_ == 0) revert MustBeNonZero();
         stakeCostIncrement = costIncrement_;
-        emit BurnCostIncrementSet(costIncrement_);
+        emit StakeCostIncrementSet(costIncrement_);
     }
 
     /**

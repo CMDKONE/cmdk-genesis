@@ -6,8 +6,10 @@ interface ISupporterRewards {
     error InsufficientRewards();
     error AddressCannotBeZero();
 
-    event InitialBurnCostSet(uint256 startBurnPrice_);
-    event BurnCostIncrementSet(uint256 increaseStep_);
+    event InitialBurnCostSet(uint256 initialBurnPrice_);
+    event BurnCostIncrementSet(uint256 costIncrement_);
+    event InitialStakeCostSet(uint256 initialStakePrice_);
+    event StakeCostIncrementSet(uint256 costIncrement_);
 
     function initialize(
         address owner,
