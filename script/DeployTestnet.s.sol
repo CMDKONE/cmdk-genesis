@@ -36,39 +36,44 @@ contract DeployTestnet is Script {
         );
 
         // Supporter Rewards for MODA and EMT
-        SupporterRewards modaRewards = SupporterRewards(
-            Upgrades.deployTransparentProxy(
-                "SupporterRewards.sol",
+        uint256 initialBurnCost = 1_000 ether;
+        uint256 burnCostIncrement = 100 ether;
+        uint256 initialStakeCost = 1_000 ether;
+        uint256 stakeCostIncrement = 100 ether;
+        uint256 totalAllocation = 2_000 ether;
+
+        bytes memory modaSupporterInitializerData = abi.encodeCall(
+            SupporterRewards.initialize,
+            (
                 owner,
-                abi.encodeCall(
-                    SupporterRewards.initialize,
-                    (
-                        owner,
-                        address(modaToken),
-                        1_000 ether,
-                        100 ether,
-                        2_000 ether,
-                        address(stakingRewards)
-                    )
-                )
+                address(modaToken),
+                initialBurnCost,
+                burnCostIncrement,
+                initialStakeCost,
+                stakeCostIncrement,
+                totalAllocation,
+                address(stakingRewards)
+            )
+        );
+        SupporterRewards modaRewards = SupporterRewards(
+            Upgrades.deployTransparentProxy("SupporterRewards.sol", owner, modaSupporterInitializerData)
+        );
+
+        bytes memory emtSupporterInitializerData = abi.encodeCall(
+            SupporterRewards.initialize,
+            (
+                owner,
+                address(modaToken),
+                initialBurnCost,
+                burnCostIncrement,
+                initialStakeCost,
+                stakeCostIncrement,
+                totalAllocation,
+                address(stakingRewards)
             )
         );
         SupporterRewards emtRewards = SupporterRewards(
-            Upgrades.deployTransparentProxy(
-                "SupporterRewards.sol",
-                owner,
-                abi.encodeCall(
-                    SupporterRewards.initialize,
-                    (
-                        owner,
-                        address(emtToken),
-                        1_000 ether,
-                        100 ether,
-                        500 ether,
-                        address(stakingRewards)
-                    )
-                )
-            )
+            Upgrades.deployTransparentProxy("SupporterRewards.sol", owner, emtSupporterInitializerData)
         );
         // Grant roles for staking
         stakingRewards.grantRole(keccak256("BURNER_ROLE"), address(modaRewards));
@@ -79,7 +84,7 @@ contract DeployTestnet is Script {
         console.log("CMDK Genesis Kit deployed at:", address(cmdkGenesisKit));
         console.log("MODA SupporterRewards deployed at:", address(modaRewards));
         console.log("EMT SupporterRewards deployed at:", address(emtRewards));
-        console.log("StakingRewards deployed at:", address(stakingRewards));
+        console.log("CMK404 StakingRewards deployed at:", address(stakingRewards));
 
         vm.stopBroadcast();
     }

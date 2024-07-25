@@ -6,23 +6,25 @@ interface ISupporterRewards {
     error InsufficientRewards();
     error AddressCannotBeZero();
 
-    event StartBurnPriceSet(uint256 startBurnPrice_);
-    event PriceIncreaseStepSet(uint256 increaseStep_);
+    event InitialBurnCostSet(uint256 startBurnPrice_);
+    event BurnCostIncrementSet(uint256 increaseStep_);
 
     function initialize(
         address owner,
         address supporterToken_,
         uint256 startBurnPrice_,
         uint256 increaseStep_,
+        uint256 initialStakeCost_,
+        uint256 stakeCostIncrement_,
         uint256 totalAllocation_,
-        address stakingContract_
+        address cmkStakingContract_
     ) external;
 
-    function setStartBurnPrice(uint256 startBurnPrice_) external;
+    function setInitialBurnCost(uint256 startBurnPrice_) external;
 
-    function setPriceIncreaseStep(uint256 increaseStep_) external;
+    function setBurnCostIncrement(uint256 increaseStep_) external;
 
-    function burn(uint256 amount) external;
+    function burnSupporterToken(uint256 amount) external;
 
-    function getBurnPrice() external view returns (uint256);
+    function getBurnCost() external view returns (uint256);
 }

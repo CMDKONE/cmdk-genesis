@@ -19,12 +19,14 @@ contract SupporterRewards is
 
     address public constant burnAddress = 0x000000000000000000000000000000000000dEaD;
     address public supporterToken;
-    address public stakingContract;
+    address public cmkStakingContract;
     uint256 public totalAllocation;
     // Updatable after deployment
-    uint256 public startBurnPrice;
-    uint256 public increaseStep;
+    uint256 public initialBurnCost;
+    uint256 public burnCostIncrement;
     uint256 public amountAllocated;
+    uint256 public initialStakeCost;
+    uint256 public stakeCostIncrement;
     // End of version 1 storage
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -37,64 +39,110 @@ contract SupporterRewards is
     function initialize(
         address owner,
         address supporterToken_,
-        uint256 startBurnPrice_,
-        uint256 increaseStep_,
+        uint256 initialBurnCost_,
+        uint256 burnCostIncrement_,
+        uint256 initialStakeCost_,
+        uint256 stakeCostIncrement_,
         uint256 totalAllocation_,
-        address stakingContract_
+        address cmkStakingContract_
     ) external initializer {
-        if (supporterToken_ == address(0) || stakingContract_ == address(0)) {
+        if (supporterToken_ == address(0) || cmkStakingContract_ == address(0)) {
             revert AddressCannotBeZero();
         }
         OwnableUpgradeable.__Ownable_init(owner);
         supporterToken = supporterToken_;
-        startBurnPrice = startBurnPrice_; // Number of token to burn to get 1 NFT
-        increaseStep = increaseStep_; // Price increase per NFT allocated
-        totalAllocation = totalAllocation_; // Total rewards to allocate
-        stakingContract = stakingContract_;
+        // Burn conditions
+        initialBurnCost = initialBurnCost_;
+        burnCostIncrement = burnCostIncrement_;
+        // Stake conditions
+        initialStakeCost = initialStakeCost_;
+        stakeCostIncrement = stakeCostIncrement_;
+        //
+        totalAllocation = totalAllocation_;
+        cmkStakingContract = cmkStakingContract_;
     }
 
     /**
      * @dev Set the start burn price cost
-     * @param startBurnPrice_ The amount the first NFT costs
+     * @param _initialCost The amount the first NFT costs
      */
-    function setStartBurnPrice(uint256 startBurnPrice_) external onlyOwner {
-        if (startBurnPrice_ == 0) revert MustBeNonZero();
-        startBurnPrice = startBurnPrice_;
-        emit StartBurnPriceSet(startBurnPrice_);
+    function setInitialBurnCost(uint256 _initialCost) external onlyOwner {
+        if (_initialCost == 0) revert MustBeNonZero();
+        initialBurnCost = _initialCost;
+        emit InitialBurnCostSet(_initialCost);
     }
 
     /**
      * @dev Set the price increase amount
-     * @param increaseStep_ The amount each nft sold increases price
+     * @param costIncrement_ The increase in price with each NFT staked
      */
-    function setPriceIncreaseStep(uint256 increaseStep_) external onlyOwner {
-        if (increaseStep_ == 0) revert MustBeNonZero();
-        increaseStep = increaseStep_;
-        emit PriceIncreaseStepSet(increaseStep_);
+    function setBurnCostIncrement(uint256 costIncrement_) external onlyOwner {
+        if (costIncrement_ == 0) revert MustBeNonZero();
+        burnCostIncrement = costIncrement_;
+        emit BurnCostIncrementSet(costIncrement_);
+    }
+
+    function setInitialStakeCost(uint256 initialCost_) external onlyOwner {
+        if (initialCost_ == 0) revert MustBeNonZero();
+        initialBurnCost = initialCost_;
+        emit InitialBurnCostSet(initialCost_);
+    }
+
+    /**
+     * @dev Set the price increase amount
+     * @param costIncrement_ The increase in price with each NFT staked
+     */
+    function setStakeCostIncrement(uint256 costIncrement_) external onlyOwner {
+        if (costIncrement_ == 0) revert MustBeNonZero();
+        stakeCostIncrement = costIncrement_;
+        emit BurnCostIncrementSet(costIncrement_);
     }
 
     /**
      * @dev Burns supporter tokens to get CMDK tokens
      * @param amount The amount of supporter tokens to burn
      */
-    function burn(uint256 amount) external nonReentrant {
+    function burnSupporterToken(uint256 amount) external nonReentrant {
         if (amount == 0) revert MustBeNonZero();
         IERC20(supporterToken).safeTransferFrom(msg.sender, address(this), amount);
         IERC20(supporterToken).safeTransfer(burnAddress, amount);
-        uint256 payout = (amount * 10 ** 18) / getBurnPrice();
+        uint256 payout = (amount * 10 ** 18) / getBurnCost();
         amountAllocated += payout;
         if (amountAllocated > totalAllocation) {
             revert InsufficientRewards();
         }
-        IStakingRewards(stakingContract).stakeInternalTokens(msg.sender, payout);
+        IStakingRewards(cmkStakingContract).stakeInternalTokens(msg.sender, payout);
     }
 
     /**
-     * @dev Get the price to claim 1 CMDK token
-     * @return The price
+     * @dev Stakes supporter tokens to get $CMDK tokens
+     * @param amount The amount of supporter tokens to stake
      */
-    function getBurnPrice() public view returns (uint256) {
-        return ((amountAllocated * increaseStep) / 10 ** 18) + startBurnPrice;
+    function stakeSupporterToken(uint256 amount) external nonReentrant {
+        if (amount == 0) revert MustBeNonZero();
+        IERC20(supporterToken).safeTransferFrom(msg.sender, address(this), amount);
+        uint256 payout = (amount * 10 ** 18) / getStakeCost();
+        amountAllocated += payout;
+        if (amountAllocated > totalAllocation) {
+            revert InsufficientRewards();
+        }
+        IStakingRewards(cmkStakingContract).stakeInternalTokens(msg.sender, payout);
+    }
+
+    /**
+     * @dev Get the burn amount needed to claim 1 $CMK404 token
+     * @return The amount of supporter required
+     */
+    function getBurnCost() public view returns (uint256) {
+        return ((amountAllocated * burnCostIncrement) / 10 ** 18) + initialBurnCost;
+    }
+
+    /**
+     * @dev Get the stake amount needed to claim 1 $CMK404 token
+     * @return The amount of supporter required
+     */
+    function getStakeCost() public view returns (uint256) {
+        return ((amountAllocated * stakeCostIncrement) / 10 ** 18) + initialStakeCost;
     }
 
     // Internal functions
