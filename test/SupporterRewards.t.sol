@@ -39,24 +39,27 @@ contract SupporterRewardsTest is Test {
         address supporterTokenAddress,
         address stakingRewardsAddress
     ) internal returns (SupporterRewards) {
-        uint256 startBurnPrice = 1_000 ether;
-        uint256 increaseStep = 100 ether;
+        uint256 initialBurnCost = 1_000 ether;
+        uint256 burnCostIncrement = 100 ether;
+        uint256 initialStakeCost = 1_000 ether;
+        uint256 stakeCostIncrement = 100 ether;
         uint256 totalAllocation = 4 * NFT;
-        rewardsProxyAddress = Upgrades.deployTransparentProxy(
-            "SupporterRewards.sol",
-            owner,
-            abi.encodeCall(
-                SupporterRewards.initialize,
-                (
-                    owner,
-                    supporterTokenAddress,
-                    startBurnPrice,
-                    increaseStep,
-                    totalAllocation,
-                    stakingRewardsAddress
-                )
+
+        bytes memory initializerData = abi.encodeCall(
+            SupporterRewards.initialize,
+            (
+                owner,
+                supporterTokenAddress,
+                initialBurnCost,
+                burnCostIncrement,
+                initialStakeCost,
+                stakeCostIncrement,
+                totalAllocation,
+                stakingRewardsAddress
             )
         );
+        rewardsProxyAddress =
+            Upgrades.deployTransparentProxy("SupporterRewards.sol", owner, initializerData);
         return SupporterRewards(rewardsProxyAddress);
     }
 
@@ -76,17 +79,17 @@ contract SupporterRewardsTest is Test {
 
     function test_setup() public view {
         assertEq(supporterRewards.supporterToken(), address(supporterToken));
-        assertEq(supporterRewards.startBurnPrice(), 1_000 ether);
-        assertEq(supporterRewards.increaseStep(), 100 ether);
+        assertEq(supporterRewards.initialBurnCost(), 1_000 ether);
+        assertEq(supporterRewards.burnCostIncrement(), 100 ether);
         assertEq(supporterRewards.amountAllocated(), 0);
     }
 
-    function test_burn() public {
+    function test_burnSupporterToken() public {
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 1_000 ether);
         vm.expectEmit();
         emit IStakingRewards.TokensStaked(1 * NFT);
-        supporterRewards.burn(1_000 ether);
+        supporterRewards.burnSupporterToken(1_000 ether);
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(tokenHolder), 4_000 ether);
         IStakingRewards.Stake memory stake = stakingRewards.usersStake(tokenHolder, 0);
@@ -94,12 +97,25 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterToken.balanceOf(burnAddress), 1_000 ether);
     }
 
+    function test_stakeSupporterToken() public {
+        vm.startPrank(tokenHolder);
+        supporterToken.approve(address(supporterRewards), 1_000 ether);
+        vm.expectEmit();
+        emit IStakingRewards.TokensStaked(1 * NFT);
+        supporterRewards.stakeSupporterToken(1_000 ether);
+        vm.stopPrank();
+        assertEq(supporterToken.balanceOf(tokenHolder), 4_000 ether);
+        IStakingRewards.Stake memory stake = stakingRewards.usersStake(tokenHolder, 0);
+        assertEq(stake.amount, 1 * NFT);
+        assertEq(supporterToken.balanceOf(address(supporterRewards)), 1_000 ether);
+    }
+
     function test_setStartBurnPrice() public {
         vm.prank(owner);
         vm.expectEmit();
-        emit ISupporterRewards.StartBurnPriceSet(200 ether);
-        supporterRewards.setStartBurnPrice(200 ether);
-        assertEq(supporterRewards.startBurnPrice(), 200 ether);
+        emit ISupporterRewards.InitialBurnCostSet(200 ether);
+        supporterRewards.setInitialBurnCost(200 ether);
+        assertEq(supporterRewards.initialBurnCost(), 200 ether);
     }
 
     function test_setStartBurnPrice_onlyOwner_revert() public {
@@ -107,7 +123,7 @@ contract SupporterRewardsTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)
         );
-        supporterRewards.setStartBurnPrice(200 ether);
+        supporterRewards.setInitialBurnCost(200 ether);
     }
 
     function helper_getTotalStaked(address user) internal view returns (uint256) {
@@ -119,15 +135,15 @@ contract SupporterRewardsTest is Test {
         return amountStaked;
     }
 
-    function test_burn_priceIncrease() public {
+    function test_burnSupporterToken_priceIncrease() public {
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 3_300 ether);
-        assertEq(supporterRewards.getBurnPrice(), 1_000 ether);
-        supporterRewards.burn(1_000 ether);
-        assertEq(supporterRewards.getBurnPrice(), 1_100 ether);
-        supporterRewards.burn(1_100 ether);
-        assertEq(supporterRewards.getBurnPrice(), 1_200 ether);
-        supporterRewards.burn(600 ether);
+        assertEq(supporterRewards.getBurnCost(), 1_000 ether);
+        supporterRewards.burnSupporterToken(1_000 ether);
+        assertEq(supporterRewards.getBurnCost(), 1_100 ether);
+        supporterRewards.burnSupporterToken(1_100 ether);
+        assertEq(supporterRewards.getBurnCost(), 1_200 ether);
+        supporterRewards.burnSupporterToken(600 ether);
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 2_300 ether);
         uint256 amountStaked = helper_getTotalStaked(tokenHolder);
@@ -142,18 +158,18 @@ contract SupporterRewardsTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, stranger)
         );
-        supporterRewards.setPriceIncreaseStep(200 ether);
+        supporterRewards.setBurnCostIncrement(200 ether);
     }
 
     function test_setPriceIncreaseStep() public {
         vm.prank(owner);
         vm.expectEmit();
-        emit ISupporterRewards.PriceIncreaseStepSet(1 ether);
-        supporterRewards.setPriceIncreaseStep(1 ether);
+        emit ISupporterRewards.BurnCostIncrementSet(1 ether);
+        supporterRewards.setBurnCostIncrement(1 ether);
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 2001 ether);
-        supporterRewards.burn(1_000 ether);
-        supporterRewards.burn(1001 ether);
+        supporterRewards.burnSupporterToken(1_000 ether);
+        supporterRewards.burnSupporterToken(1001 ether);
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 2999 ether);
         uint256 amountStaked = helper_getTotalStaked(tokenHolder);
@@ -171,13 +187,13 @@ contract SupporterRewardsTest is Test {
         assertEq(SupporterRewardsV2(rewardsProxyAddress).supporterToken(), address(supporterToken));
     }
 
-    function test_burn_InsufficientRewards() public {
+    function test_burnSupporterToken_InsufficientRewards() public {
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 4_000 ether);
-        supporterRewards.burn(4_000 ether);
+        supporterRewards.burnSupporterToken(4_000 ether);
         supporterToken.approve(address(supporterRewards), 1_000 ether);
         vm.expectRevert(ISupporterRewards.InsufficientRewards.selector);
-        supporterRewards.burn(1_000 ether);
+        supporterRewards.burnSupporterToken(1_000 ether);
         vm.stopPrank();
     }
 }
