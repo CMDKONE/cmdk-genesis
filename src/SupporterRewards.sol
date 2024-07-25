@@ -66,10 +66,10 @@ contract SupporterRewards is
      * @dev Set the start burn price cost
      * @param _initialCost The amount the first NFT costs
      */
-    function setInitialBurnCost(uint256 _initialCost) external onlyOwner {
-        if (_initialCost == 0) revert MustBeNonZero();
-        initialBurnCost = _initialCost;
-        emit InitialBurnCostSet(_initialCost);
+    function setInitialBurnCost(uint256 initialCost_) external onlyOwner {
+        if (initialCost_ == 0) revert MustBeNonZero();
+        initialBurnCost = initialCost_;
+        emit InitialBurnCostSet(initialCost_);
     }
 
     /**
