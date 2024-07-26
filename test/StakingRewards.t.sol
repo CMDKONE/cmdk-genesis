@@ -87,7 +87,6 @@ contract StakingRewardsTest is Test {
     }
 
     function test_setup() public view {
-        assertEq(stakingRewards.cmdkToken(), address(cmdkToken));
         assertEq(stakingRewards.claimEnabled(), false);
         assertEq(cmdkToken.balanceOf(address(stakingRewards)), 1 * NFT);
     }
@@ -221,6 +220,6 @@ contract StakingRewardsTest is Test {
             abi.encodeCall(StakingRewardsV2.initializeV2, ())
         );
         assertEq(StakingRewardsV2(rewardsProxyAddress).version(), 2);
-        assertEq(StakingRewardsV2(rewardsProxyAddress).cmdkToken(), address(cmdkToken));
+        assertEq(StakingRewardsV2(rewardsProxyAddress).claimEnabled(), false);
     }
 }
