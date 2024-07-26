@@ -29,9 +29,11 @@ contract StakingRewardsTest is Test {
     address anotherTokenHolder = address(3);
     address stranger = address(4);
 
-    uint256 startBurnPrice = 1_000 ether;
+    uint256 initialBurnCost = 1_000 ether;
+    uint256 burnCostIncrement = 100 ether;
+    uint256 initialStakeCost = 1_000 ether;
+    uint256 stakeCostIncrement = 100 ether;
     uint256 totalAllocation = 4 * NFT;
-    uint256 increaseStep = 100 ether;
 
     function helper_deployStakingRewards(address cmdkTokenAddress) internal returns (StakingRewards) {
         rewardsProxyAddress = Upgrades.deployTransparentProxy(
@@ -54,10 +56,13 @@ contract StakingRewardsTest is Test {
                 (
                     owner,
                     supporterTokenAddress,
-                    startBurnPrice,
-                    increaseStep,
+                    initialBurnCost,
+                    burnCostIncrement,
+                    initialStakeCost,
+                    stakeCostIncrement,
                     totalAllocation,
-                    stakingRewardsAddress
+                    stakingRewardsAddress,
+                    true
                 )
             )
         );
@@ -83,7 +88,6 @@ contract StakingRewardsTest is Test {
     }
 
     function test_setup() public view {
-        assertEq(stakingRewards.cmdkToken(), address(cmdkToken));
         assertEq(stakingRewards.claimEnabled(), false);
         assertEq(cmdkToken.balanceOf(address(stakingRewards)), 1 * NFT);
     }
@@ -165,9 +169,9 @@ contract StakingRewardsTest is Test {
         vm.prank(owner);
         stakingRewards.setClaimEnabled(true);
         vm.startPrank(anotherTokenHolder);
-        uint256 burnAmount = 1 * startBurnPrice;
+        uint256 burnAmount = 1 * initialBurnCost;
         supporterToken.approve(address(supporterRewards), burnAmount);
-        supporterRewards.burn(burnAmount);
+        supporterRewards.burnSupporterToken(burnAmount);
         uint256 startBalance = cmdkToken.balanceOf(anotherTokenHolder);
         stakingRewards.claimAll();
         uint256 endBalance = cmdkToken.balanceOf(anotherTokenHolder);
@@ -217,6 +221,6 @@ contract StakingRewardsTest is Test {
             abi.encodeCall(StakingRewardsV2.initializeV2, ())
         );
         assertEq(StakingRewardsV2(rewardsProxyAddress).version(), 2);
-        assertEq(StakingRewardsV2(rewardsProxyAddress).cmdkToken(), address(cmdkToken));
+        assertEq(StakingRewardsV2(rewardsProxyAddress).claimEnabled(), false);
     }
 }

@@ -10,31 +10,34 @@ contract DeployEmtRewards is Script {
     function run() public {
         address owner = vm.envAddress("DEPLOYER_ADDRESS");
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        address stakingContract = vm.envAddress("STAKING_CONTRACT");
+        address cmkStakingContract = vm.envAddress("STAKING_CONTRACT");
         address supporterToken = vm.envAddress("EMT_TOKEN");
 
         vm.startBroadcast(privateKey);
 
-        uint256 startBurnPrice = 1_000 ether;
-        uint256 increaseStep = 100 ether;
+        uint256 initialBurnCost = 1_000 ether;
+        uint256 burnCostIncrement = 100 ether;
+        uint256 initialStakeCost = 1_000 ether;
+        uint256 stakeCostIncrement = 100 ether;
         uint256 totalAllocation = 500 ether;
+        bool stakingEnabled = false;
 
-        SupporterRewards supporterRewards = SupporterRewards(
-            Upgrades.deployTransparentProxy(
-                "SupporterRewards.sol",
+        bytes memory initializerData = abi.encodeCall(
+            SupporterRewards.initialize,
+            (
                 owner,
-                abi.encodeCall(
-                    SupporterRewards.initialize,
-                    (
-                        owner,
-                        supporterToken,
-                        startBurnPrice,
-                        increaseStep,
-                        totalAllocation,
-                        stakingContract
-                    )
-                )
+                supporterToken,
+                initialBurnCost,
+                burnCostIncrement,
+                initialStakeCost,
+                stakeCostIncrement,
+                totalAllocation,
+                cmkStakingContract,
+                stakingEnabled
             )
+        );
+        SupporterRewards supporterRewards = SupporterRewards(
+            Upgrades.deployTransparentProxy("SupporterRewards.sol", owner, initializerData)
         );
 
         console.log("EMT SupporterRewards deployed at:", address(supporterRewards));
