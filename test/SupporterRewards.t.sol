@@ -55,7 +55,8 @@ contract SupporterRewardsTest is Test {
                 initialStakeCost,
                 stakeCostIncrement,
                 totalAllocation,
-                stakingRewardsAddress
+                stakingRewardsAddress,
+                true
             )
         );
         rewardsProxyAddress =

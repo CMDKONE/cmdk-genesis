@@ -61,7 +61,8 @@ contract StakingRewardsTest is Test {
                     initialStakeCost,
                     stakeCostIncrement,
                     totalAllocation,
-                    stakingRewardsAddress
+                    stakingRewardsAddress,
+                    true
                 )
             )
         );

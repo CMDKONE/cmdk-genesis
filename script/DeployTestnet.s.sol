@@ -52,7 +52,8 @@ contract DeployTestnet is Script {
                 initialStakeCost,
                 stakeCostIncrement,
                 totalAllocation,
-                address(stakingRewards)
+                address(stakingRewards),
+                true
             )
         );
         SupporterRewards modaRewards = SupporterRewards(
@@ -69,7 +70,8 @@ contract DeployTestnet is Script {
                 initialStakeCost,
                 stakeCostIncrement,
                 totalAllocation,
-                address(stakingRewards)
+                address(stakingRewards),
+                false
             )
         );
         SupporterRewards emtRewards = SupporterRewards(

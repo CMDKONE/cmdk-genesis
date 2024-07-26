@@ -21,6 +21,7 @@ contract SupporterRewards is
     address public supporterToken;
     address public cmkStakingContract;
     uint256 public totalAllocation;
+    bool private stakingEnabled;
     // Updatable after deployment
     uint256 public initialBurnCost;
     uint256 public burnCostIncrement;
@@ -46,7 +47,8 @@ contract SupporterRewards is
         uint256 initialStakeCost_,
         uint256 stakeCostIncrement_,
         uint256 totalAllocation_,
-        address cmkStakingContract_
+        address cmkStakingContract_,
+        bool stakingEnabled_
     ) external initializer {
         if (supporterToken_ == address(0) || cmkStakingContract_ == address(0)) {
             revert AddressCannotBeZero();
@@ -62,6 +64,7 @@ contract SupporterRewards is
         //
         totalAllocation = totalAllocation_;
         cmkStakingContract = cmkStakingContract_;
+        stakingEnabled = stakingEnabled_;
     }
 
     /**
@@ -121,6 +124,7 @@ contract SupporterRewards is
      * @param amount The amount of supporter tokens to stake
      */
     function stakeSupporterTokens(uint256 amount) external nonReentrant {
+        if (!stakingEnabled) revert StakingNotEnabled();
         if (amount == 0) revert MustBeNonZero();
         IERC20(supporterToken).safeTransferFrom(msg.sender, address(this), amount);
         uint256 cmkAmount = (amount * 10 ** 18) / getStakeCost();

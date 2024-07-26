@@ -20,6 +20,7 @@ contract DeployEmtRewards is Script {
         uint256 initialStakeCost = 1_000 ether;
         uint256 stakeCostIncrement = 100 ether;
         uint256 totalAllocation = 500 ether;
+        bool stakingEnabled = false;
 
         bytes memory initializerData = abi.encodeCall(
             SupporterRewards.initialize,
@@ -31,7 +32,8 @@ contract DeployEmtRewards is Script {
                 initialStakeCost,
                 stakeCostIncrement,
                 totalAllocation,
-                cmkStakingContract
+                cmkStakingContract,
+                stakingEnabled
             )
         );
         SupporterRewards supporterRewards = SupporterRewards(

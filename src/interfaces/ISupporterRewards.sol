@@ -6,6 +6,7 @@ interface ISupporterRewards {
     error InsufficientRewards();
     error AddressCannotBeZero();
     error ClaimingNotEnabled();
+    error StakingNotEnabled();
 
     event InitialBurnCostSet(uint256 initialBurnPrice_);
     event BurnCostIncrementSet(uint256 costIncrement_);
@@ -21,7 +22,8 @@ interface ISupporterRewards {
         uint256 initialStakeCost_,
         uint256 stakeCostIncrement_,
         uint256 totalAllocation_,
-        address cmkStakingContract_
+        address cmkStakingContract_,
+        bool stakingEnabled_
     ) external;
 
     function setInitialBurnCost(uint256 startBurnPrice_) external;
