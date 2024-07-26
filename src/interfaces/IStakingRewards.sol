@@ -21,6 +21,8 @@ interface IStakingRewards {
 
     function initialize(address owner, address cmdkToken_) external;
 
+    function claimEnabled() external view returns (bool);
+
     function stakeTokens(uint256 amount) external;
 
     function stakeInternalTokens(address staker, uint256 amount) external;

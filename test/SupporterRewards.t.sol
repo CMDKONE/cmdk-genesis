@@ -102,7 +102,7 @@ contract SupporterRewardsTest is Test {
         supporterToken.approve(address(supporterRewards), 1_000 ether);
         vm.expectEmit();
         emit IStakingRewards.TokensStaked(1 * NFT);
-        supporterRewards.stakeSupporterToken(1_000 ether);
+        supporterRewards.stakeSupporterTokens(1_000 ether);
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(tokenHolder), 4_000 ether);
         IStakingRewards.Stake memory stake = stakingRewards.usersStake(tokenHolder, 0);
@@ -173,11 +173,11 @@ contract SupporterRewardsTest is Test {
         vm.startPrank(tokenHolder);
         supporterToken.approve(address(supporterRewards), 3_300 ether);
         assertEq(supporterRewards.getStakeCost(), 1_000 ether);
-        supporterRewards.stakeSupporterToken(1_000 ether);
+        supporterRewards.stakeSupporterTokens(1_000 ether);
         assertEq(supporterRewards.getStakeCost(), 1_100 ether);
-        supporterRewards.stakeSupporterToken(1_100 ether);
+        supporterRewards.stakeSupporterTokens(1_100 ether);
         assertEq(supporterRewards.getStakeCost(), 1_200 ether);
-        supporterRewards.stakeSupporterToken(600 ether);
+        supporterRewards.stakeSupporterTokens(600 ether);
         vm.stopPrank();
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 2_300 ether);
         uint256 amountStaked = helper_getTotalCmk404Staked(tokenHolder);
@@ -208,6 +208,19 @@ contract SupporterRewardsTest is Test {
         assertEq(supporterToken.balanceOf(address(tokenHolder)), 2999 ether);
         uint256 amountStaked = helper_getTotalCmk404Staked(tokenHolder);
         assertEq(amountStaked, 2 * NFT);
+    }
+
+    function test_claimSupporterTokens() public {
+        vm.prank(owner);
+        stakingRewards.setClaimEnabled(true);
+        uint256 balanceBefore = supporterToken.balanceOf(tokenHolder);
+        vm.startPrank(tokenHolder);
+        supporterToken.approve(address(supporterRewards), 1_000 ether);
+        supporterRewards.stakeSupporterTokens(1_000 ether);
+        supporterRewards.claimSupporterTokens();
+        vm.stopPrank();
+        uint256 balanceAfter = supporterToken.balanceOf(tokenHolder);
+        assertEq(balanceAfter, balanceBefore);
     }
 
     function test_upgrade() public {

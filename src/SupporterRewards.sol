@@ -27,6 +27,8 @@ contract SupporterRewards is
     uint256 public amountAllocated;
     uint256 public initialStakeCost;
     uint256 public stakeCostIncrement;
+
+    mapping(address => uint256) public stakedSupporterTokenBalances;
     // End of version 1 storage
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -64,7 +66,7 @@ contract SupporterRewards is
 
     /**
      * @dev Set the start burn price cost
-     * @param _initialCost The amount the first NFT costs
+     * @param initialCost_ The amount the first NFT costs
      */
     function setInitialBurnCost(uint256 initialCost_) external onlyOwner {
         if (initialCost_ == 0) revert MustBeNonZero();
@@ -106,28 +108,40 @@ contract SupporterRewards is
         if (amount == 0) revert MustBeNonZero();
         IERC20(supporterToken).safeTransferFrom(msg.sender, address(this), amount);
         IERC20(supporterToken).safeTransfer(burnAddress, amount);
-        uint256 payout = (amount * 10 ** 18) / getBurnCost();
-        amountAllocated += payout;
+        uint256 cmkAmount = (amount * 10 ** 18) / getBurnCost();
+        amountAllocated += cmkAmount;
         if (amountAllocated > totalAllocation) {
             revert InsufficientRewards();
         }
-        IStakingRewards(cmkStakingContract).stakeInternalTokens(msg.sender, payout);
+        IStakingRewards(cmkStakingContract).stakeInternalTokens(msg.sender, cmkAmount);
     }
 
     /**
      * @dev Stakes supporter tokens to get $CMDK tokens
      * @param amount The amount of supporter tokens to stake
      */
-    function stakeSupporterToken(uint256 amount) external nonReentrant {
+    function stakeSupporterTokens(uint256 amount) external nonReentrant {
         if (amount == 0) revert MustBeNonZero();
         IERC20(supporterToken).safeTransferFrom(msg.sender, address(this), amount);
-        uint256 payout = (amount * 10 ** 18) / getStakeCost();
-        amountAllocated += payout;
+        uint256 cmkAmount = (amount * 10 ** 18) / getStakeCost();
+        amountAllocated += cmkAmount;
         if (amountAllocated > totalAllocation) {
             revert InsufficientRewards();
         }
-        IStakingRewards(cmkStakingContract).stakeInternalTokens(msg.sender, payout);
+        IStakingRewards(cmkStakingContract).stakeInternalTokens(msg.sender, cmkAmount);
+        stakedSupporterTokenBalances[msg.sender] += amount;
     }
+
+    function claimSupporterTokens() external nonReentrant {
+        if (!IStakingRewards(cmkStakingContract).claimEnabled()) revert ClaimingNotEnabled();
+        uint256 amount = stakedSupporterTokenBalances[msg.sender];
+        if (amount == 0) revert MustBeNonZero();
+        stakedSupporterTokenBalances[msg.sender] = 0;
+        IERC20(supporterToken).safeTransfer(msg.sender, amount);
+        emit SupporterTokensClaimed(msg.sender, amount);
+    }
+
+    // Public functions
 
     /**
      * @dev Get the burn amount needed to claim 1 $CMK404 token

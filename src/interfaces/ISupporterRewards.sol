@@ -5,11 +5,13 @@ interface ISupporterRewards {
     error MustBeNonZero();
     error InsufficientRewards();
     error AddressCannotBeZero();
+    error ClaimingNotEnabled();
 
     event InitialBurnCostSet(uint256 initialBurnPrice_);
     event BurnCostIncrementSet(uint256 costIncrement_);
     event InitialStakeCostSet(uint256 initialStakePrice_);
     event StakeCostIncrementSet(uint256 costIncrement_);
+    event SupporterTokensClaimed(address indexed user, uint256 amount);
 
     function initialize(
         address owner,
@@ -28,7 +30,7 @@ interface ISupporterRewards {
 
     function burnSupporterToken(uint256 amount) external;
 
-    function stakeSupporterToken(uint256 amount) external;
+    function stakeSupporterTokens(uint256 amount) external;
 
     function getBurnCost() external view returns (uint256);
 

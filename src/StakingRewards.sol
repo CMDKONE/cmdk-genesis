@@ -16,10 +16,10 @@ contract StakingRewards is
 {
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
-    address public cmdkToken;
+    address public cmk404Token;
     // Updatable after deployment
-    bool public claimEnabled;
-    mapping(address => Stake[]) usersStakes;
+    bool private _claimEnabled;
+    mapping(address => Stake[]) private _usersStakes;
     address[] private _stakers;
 
     // End of version 1 storage
@@ -31,26 +31,34 @@ contract StakingRewards is
 
     // External Functions
 
-    function initialize(address owner, address cmdkToken_) external initializer {
-        if (owner == address(0) || cmdkToken_ == address(0)) {
+    function initialize(address owner, address cmk404Token_) external initializer {
+        if (owner == address(0) || cmk404Token_ == address(0)) {
             revert AddressCannotBeZero();
         }
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
-        cmdkToken = cmdkToken_;
+        cmk404Token = cmk404Token_;
     }
 
     /**
-     * @dev Stake CMDK tokens
+     * @dev Returns the state of claiming
+     * @return If claiming is enabled
+     */
+    function claimEnabled() external view returns (bool) {
+        return _claimEnabled;
+    }
+
+    /**
+     * @dev Stake CMK404 tokens
      * @param amount The amount to stake
      */
     function stakeTokens(uint256 amount) external nonReentrant {
-        bool success = IERC404(cmdkToken).erc20TransferFrom(msg.sender, address(this), amount);
+        bool success = IERC404(cmk404Token).erc20TransferFrom(msg.sender, address(this), amount);
         if (!success) revert TransferFailed();
         createStakedEntry(msg.sender, amount);
     }
 
     /**
-     * @dev Stake CMDK tokens internally
+     * @dev Stake CMK404 tokens internally
      * @param amount The amount to stake
      */
     function stakeInternalTokens(address staker, uint256 amount) external onlyRole(BURNER_ROLE) {
@@ -62,7 +70,7 @@ contract StakingRewards is
      * @param claimEnabled_ Whether or not claiming is enabled
      */
     function setClaimEnabled(bool claimEnabled_) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        claimEnabled = claimEnabled_;
+        _claimEnabled = claimEnabled_;
     }
 
     /**
@@ -71,7 +79,7 @@ contract StakingRewards is
      * @return count The count of stakes for the user
      */
     function usersStakeCount(address user_) external view returns (uint256 count) {
-        return usersStakes[user_].length;
+        return _usersStakes[user_].length;
     }
 
     /**
@@ -80,28 +88,28 @@ contract StakingRewards is
      * @return stake The staked data for the user
      */
     function usersStake(address user_, uint256 index) external view returns (Stake memory stake) {
-        return usersStakes[user_][index];
+        return _usersStakes[user_][index];
     }
 
     /**
-     * @dev Claim the CMDK if claiming enabled
+     * @dev Claim the CMK404 if claiming enabled
      */
     function claimAll() external nonReentrant {
-        if (!claimEnabled) revert ClaimingNotEnabled();
+        if (!_claimEnabled) revert ClaimingNotEnabled();
 
-        uint256 count = usersStakes[msg.sender].length;
+        uint256 count = _usersStakes[msg.sender].length;
 
         uint256 totalAmount = 0;
 
         for (uint256 i = 0; i < count; i++) {
-            if (!usersStakes[msg.sender][i].claimed) {
-                totalAmount += usersStakes[msg.sender][i].amount;
+            if (!_usersStakes[msg.sender][i].claimed) {
+                totalAmount += _usersStakes[msg.sender][i].amount;
             }
-            usersStakes[msg.sender][i].claimed = true;
+            _usersStakes[msg.sender][i].claimed = true;
         }
 
         if (totalAmount == 0) revert MustBeNonZero();
-        bool success = IERC404(cmdkToken).transfer(msg.sender, totalAmount);
+        bool success = IERC404(cmk404Token).transfer(msg.sender, totalAmount);
         if (!success) revert TransferFailed();
         emit TokensClaimed(totalAmount);
     }
@@ -128,7 +136,7 @@ contract StakingRewards is
      */
     function withdrawTokens(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         emit TokensWithdrawn(amount);
-        bool success = IERC404(cmdkToken).transfer(msg.sender, amount);
+        bool success = IERC404(cmk404Token).transfer(msg.sender, amount);
         if (!success) revert TransferFailed();
     }
 
@@ -141,10 +149,10 @@ contract StakingRewards is
     function createStakedEntry(address staker, uint256 amount) internal {
         if (amount == 0) revert MustBeNonZero();
         // If users first stake, add them to the stakers list
-        if (usersStakes[staker].length == 0) {
+        if (_usersStakes[staker].length == 0) {
             _stakers.push(staker);
         }
-        usersStakes[staker].push(Stake(amount, block.timestamp, false));
+        _usersStakes[staker].push(Stake(amount, block.timestamp, false));
         emit TokensStaked(amount);
     }
 }
