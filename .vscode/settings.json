@@ -1,5 +1,4 @@
 {
-  "solidity.compileUsingRemoteVersion": "v0.8.26+commit.8a97fa7a",
   "editor.formatOnSave": true,
   "solidity.packageDefaultDependenciesContractsDirectory": "src",
   "solidity.packageDefaultDependenciesDirectory": "lib",
@@ -19,5 +18,7 @@
     "openzeppelin-contracts/=lib/openzeppelin-contracts/",
     "openzeppelin-foundry-upgrades/=lib/openzeppelin-foundry-upgrades/src/",
     "solidity-stringutils/=lib/openzeppelin-foundry-upgrades/lib/solidity-stringutils/"
-  ]
+  ],
+  "solidity.defaultCompiler": "remote",
+  "solidity.compileUsingRemoteVersion": "v0.8.20+commit.a1b79de6"
 }

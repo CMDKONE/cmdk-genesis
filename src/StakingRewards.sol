@@ -1,21 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {AccessControlUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC404} from "erc404/interfaces/IERC404.sol";
 import {IStakingRewards} from "./interfaces/IStakingRewards.sol";
 
-contract StakingRewards is
-    IStakingRewards,
-    Initializable,
-    AccessControlUpgradeable,
-    ReentrancyGuardUpgradeable
-{
-    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
-
+contract StakingRewards is IStakingRewards, Initializable, Ownable, ReentrancyGuardUpgradeable {
     address public cmk404Token;
     // Updatable after deployment
     bool private _claimEnabled;
@@ -25,7 +17,7 @@ contract StakingRewards is
     // End of version 1 storage
 
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() {
+    constructor(address owner_) Ownable(owner_) {
         _disableInitializers();
     }
 
@@ -35,7 +27,6 @@ contract StakingRewards is
         if (owner == address(0) || cmk404Token_ == address(0)) {
             revert AddressCannotBeZero();
         }
-        _grantRole(DEFAULT_ADMIN_ROLE, owner);
         cmk404Token = cmk404Token_;
     }
 
@@ -61,7 +52,7 @@ contract StakingRewards is
      * @dev Stake CMK404 tokens internally
      * @param amount The amount to stake
      */
-    function stakeInternalTokens(address staker, uint256 amount) external onlyRole(BURNER_ROLE) {
+    function stakeInternalTokens(address staker, uint256 amount) external {
         createStakedEntry(staker, amount);
     }
 
@@ -69,7 +60,7 @@ contract StakingRewards is
      * @dev Set whether or not claiming is enabled
      * @param claimEnabled_ Whether or not claiming is enabled
      */
-    function setClaimEnabled(bool claimEnabled_) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setClaimEnabled(bool claimEnabled_) external onlyOwner {
         _claimEnabled = claimEnabled_;
     }
 
@@ -134,7 +125,7 @@ contract StakingRewards is
      * @dev Withdraw CMDK tokens
      * @param amount The amount to withdraw
      */
-    function withdrawTokens(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function withdrawTokens(uint256 amount) external onlyOwner {
         emit TokensWithdrawn(amount);
         bool success = IERC404(cmk404Token).transfer(msg.sender, amount);
         if (!success) revert TransferFailed();

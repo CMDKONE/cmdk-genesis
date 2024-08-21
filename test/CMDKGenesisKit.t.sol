@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.26;
+pragma solidity ^0.8.20;
 
 import {Test, console} from "forge-std/Test.sol";
 import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IERC7572} from "../src/interfaces/IERC7572.sol";
-import {IERC4906} from "@openzeppelin/contracts/interfaces/IERC4906.sol";
+import {IERC4906} from "./../src/interfaces/IERC4906.sol";
+import {IERC7572} from "./../src/interfaces/IERC7572.sol";
 
 contract CMDKGenesisKitTest is Test {
     CMDKGenesisKit public cmdkGenesisKit;
@@ -15,6 +15,9 @@ contract CMDKGenesisKitTest is Test {
     address stranger = address(2);
     address tokenHolder = address(3);
     address bridgeAddress = address(4);
+
+    event BatchMetadataUpdate(uint256 _fromTokenId, uint256 _toTokenId);
+    event ContractURIUpdated();
 
     function setUp() public {
         cmdkGenesisKit = new CMDKGenesisKit(owner);
@@ -42,7 +45,7 @@ contract CMDKGenesisKitTest is Test {
     function test_setBaseURI() public {
         vm.prank(owner);
         vm.expectEmit(true, true, true, true);
-        emit IERC4906.BatchMetadataUpdate(1, totalNfts);
+        emit BatchMetadataUpdate(1, totalNfts);
         cmdkGenesisKit.setBaseURI("theBaseURI");
         assertEq(cmdkGenesisKit.tokenURI(1), "theBaseURI");
     }
@@ -70,7 +73,7 @@ contract CMDKGenesisKitTest is Test {
     function test_setContractURI() public {
         vm.prank(owner);
         vm.expectEmit();
-        emit IERC7572.ContractURIUpdated();
+        emit ContractURIUpdated();
         cmdkGenesisKit.setContractURI("theContractURI");
         assertEq(cmdkGenesisKit.contractURI(), "theContractURI");
     }
