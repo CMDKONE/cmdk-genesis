@@ -9,12 +9,14 @@ contract WhitelistClaim is Ownable {
     error TransferFailed();
     error InvalidProof();
     error AlreadyClaimed();
+    error InvalidTokenAddress();
 
     bytes32 public merkleRoot;
     mapping(address => bool) public claimed;
     address public immutable tokenAddress;
 
     constructor(address owner, address tokenAddress_) Ownable(owner) {
+        if (tokenAddress_ == address(0)) revert InvalidTokenAddress();
         tokenAddress = tokenAddress_;
     }
 
