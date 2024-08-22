@@ -27,12 +27,12 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {ERC404} from "erc404/ERC404.sol";
 
 /**
- * @title CMDK Genesis Kit
- * @notice CMDK Genesis Kit begins with fungible tokens.
+ * @title CMDK Launch Kit
+ * @notice CMDK Launch Kit begins with fungible tokens.
  * When a user has at least one base unit (10^18) amount of tokens, they will automatically receive an NFT.
  * NFTs are minted as an address accumulates each base unit amount of tokens.
  */
-contract CMDKGenesisKit is Ownable, ERC404, IERC4906, IERC7572 {
+contract CMDKLaunchKit is Ownable, ERC404, IERC4906, IERC7572 {
     error AddressCannotBeZero();
 
     string private _baseURI;
@@ -40,7 +40,7 @@ contract CMDKGenesisKit is Ownable, ERC404, IERC4906, IERC7572 {
     bool private _singleUri = true;
     address public bridgeAddress;
 
-    constructor(address owner_) ERC404("CMDK Genesis Kit", "$ONE404", 18) Ownable(owner_) {
+    constructor(address owner_) ERC404("CMDK Launch Kit", "$ONE404", 18) Ownable(owner_) {
         // Do not mint the ERC721s to the initial owner, as it's a waste of gas.
         _setERC721TransferExempt(owner_, true);
         _mintERC20(owner_, 5_000 * units);

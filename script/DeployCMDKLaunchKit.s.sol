@@ -2,18 +2,18 @@
 pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
-import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
+import {CMDKLaunchKit} from "../src/CMDKLaunchKit.sol";
 
-contract DeployCMDKGenesisKit is Script {
+contract DeployCMDKLaunchKit is Script {
     function run() public {
         address owner = vm.envAddress("DEPLOYER_ADDRESS");
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
 
         vm.startBroadcast(privateKey);
 
-        CMDKGenesisKit cmdkGenesisKit = new CMDKGenesisKit(owner);
+        CMDKLaunchKit cmdkLaunchKit = new CMDKLaunchKit(owner);
 
-        console.log("CMDKGenesisKit deployed at:", address(cmdkGenesisKit));
+        console.log("CMDKLaunchKit deployed at:", address(cmdkLaunchKit));
 
         vm.stopBroadcast();
     }

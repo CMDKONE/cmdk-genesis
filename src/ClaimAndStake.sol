@@ -12,7 +12,7 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
     error MustBeNonZero();
     error InsufficientRewards();
     error AddressCannotBeZero();
-    error ClaimingNotEnabled();
+    error UnstakingNotEnabled();
     error Unauthorized();
     error TransferFailed();
 
@@ -31,7 +31,7 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
     address private immutable cmk404Address;
     mapping(address => Stake[]) private _usersStakes;
     address[] private _stakers;
-    uint256 public minimumStakeTime = 30 days;
+    bool public unstakeEnabled = false;
 
     constructor(address owner, address cmk404Address_) Ownable(owner) {
         if (cmk404Address_ == address(0)) revert AddressCannotBeZero();
@@ -44,8 +44,8 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
         merkleRoot = merkleRoot_;
     }
 
-    function setMinimumStakeTime(uint256 minimumStakeTime_) external onlyOwner {
-        minimumStakeTime = minimumStakeTime_;
+    function setUnstakeEnabled(bool enabled) external onlyOwner {
+        unstakeEnabled = enabled;
     }
 
     /**
@@ -72,18 +72,18 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
     }
 
     function unstakeAll() external {
+        if (!unstakeEnabled) revert UnstakingNotEnabled();
+
         uint256 count = _usersStakes[msg.sender].length;
 
         uint256 totalAmount = 0;
 
         for (uint256 i = 0; i < count; i++) {
-            // If the stake is not claimed and the minimum time has passed
-            bool hasClaimed = _usersStakes[msg.sender][i].claimTime != 0;
-            uint256 timeElapsed = _usersStakes[msg.sender][i].startTime + minimumStakeTime;
-            if (!hasClaimed && timeElapsed < block.timestamp) {
+            // If the stake is not claimed
+            if (_usersStakes[msg.sender][i].claimTime == 0) {
                 totalAmount += _usersStakes[msg.sender][i].amount;
+                _usersStakes[msg.sender][i].claimTime = block.timestamp;
             }
-            _usersStakes[msg.sender][i].claimTime = block.timestamp;
         }
 
         if (totalAmount == 0) revert MustBeNonZero();

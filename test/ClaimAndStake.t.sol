@@ -3,12 +3,12 @@ pragma solidity ^0.8.20;
 
 import {Test, console} from "forge-std/Test.sol";
 import {ClaimAndStake} from "../src/ClaimAndStake.sol";
-import {CMDKGenesisKit} from "../src/CMDKGenesisKit.sol";
+import {CMDKLaunchKit} from "../src/CMDKLaunchKit.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Merkle} from "murky/Merkle.sol";
 
 contract ClaimAndStakeTest is Test {
-    CMDKGenesisKit cmdkGenesisKit;
+    CMDKLaunchKit cmdkLaunchKit;
     ClaimAndStake claimAndStake;
     Merkle merkleTree;
     bytes32[] aliceProof;
@@ -18,29 +18,30 @@ contract ClaimAndStakeTest is Test {
     address stranger = address(2);
     address alice = address(3);
     address bob = address(4);
-    uint256 aliceAmount = 123;
-    uint256 bobAmount = 456;
+    uint256 aliceAllocationAmount = 123;
+    uint256 bobAllocationAmount = 456;
 
     error AlreadyClaimed();
     error InvalidProof();
 
     function setUp() public {
-        cmdkGenesisKit = new CMDKGenesisKit(owner);
-        claimAndStake = new ClaimAndStake(owner, address(cmdkGenesisKit));
-        vm.prank(owner);
-        cmdkGenesisKit.setERC721TransferExempt(address(claimAndStake), true);
-        vm.prank(owner);
-        cmdkGenesisKit.transfer(address(claimAndStake), 100 ether);
+        cmdkLaunchKit = new CMDKLaunchKit(owner);
+        claimAndStake = new ClaimAndStake(owner, address(cmdkLaunchKit));
+        vm.startPrank(owner);
+        cmdkLaunchKit.setERC721TransferExempt(address(claimAndStake), true);
+        cmdkLaunchKit.transfer(address(claimAndStake), 100 ether);
+        cmdkLaunchKit.transfer(address(alice), 100 ether);
+        cmdkLaunchKit.transfer(address(bob), 100 ether);
         // Merkle tree
         merkleTree = new Merkle();
         bytes32[] memory data = new bytes32[](2);
-        data[0] = keccak256(abi.encodePacked(alice, aliceAmount));
-        data[1] = keccak256(abi.encodePacked(bob, bobAmount));
+        data[0] = keccak256(abi.encodePacked(alice, aliceAllocationAmount));
+        data[1] = keccak256(abi.encodePacked(bob, bobAllocationAmount));
         bytes32 root = merkleTree.getRoot(data);
-        vm.prank(owner);
         claimAndStake.setMerkleRoot(root);
         aliceProof = merkleTree.getProof(data, 0);
         bobProof = merkleTree.getProof(data, 1);
+        vm.stopPrank();
     }
 
     function test_setMerkleRoot_onlyOwner_revert() public {
@@ -57,29 +58,67 @@ contract ClaimAndStakeTest is Test {
 
     function test_claim() public {
         vm.prank(alice);
-        claimAndStake.claim(aliceAmount, aliceProof);
+        claimAndStake.claim(aliceAllocationAmount, aliceProof);
         uint256 amount = claimAndStake.usersStake(alice, 0).amount;
         uint256 startTime = claimAndStake.usersStake(alice, 0).startTime;
         uint256 claimTime = claimAndStake.usersStake(alice, 0).claimTime;
-        assertEq(amount, aliceAmount);
+        assertEq(amount, aliceAllocationAmount);
         assertEq(startTime, block.timestamp);
         assertEq(claimTime, 0);
         vm.prank(bob);
-        claimAndStake.claim(bobAmount, bobProof);
+        claimAndStake.claim(bobAllocationAmount, bobProof);
     }
 
     function test_claim_wrongProof_revert() public {
+        uint256 startBalance = cmdkLaunchKit.balanceOf(alice);
         vm.prank(alice);
         vm.expectRevert(InvalidProof.selector);
-        claimAndStake.claim(aliceAmount, bobProof);
-        assertEq(cmdkGenesisKit.balanceOf(alice), 0);
+        claimAndStake.claim(aliceAllocationAmount, bobProof);
+        assertEq(cmdkLaunchKit.balanceOf(alice), startBalance);
     }
 
     function test_claim_AlreadyClaimed_revert() public {
         vm.prank(alice);
-        claimAndStake.claim(aliceAmount, aliceProof);
+        claimAndStake.claim(aliceAllocationAmount, aliceProof);
         vm.expectRevert(AlreadyClaimed.selector);
         vm.prank(alice);
-        claimAndStake.claim(aliceAmount, aliceProof);
+        claimAndStake.claim(aliceAllocationAmount, aliceProof);
+    }
+
+    function test_stake() public {
+        vm.prank(alice);
+        cmdkLaunchKit.approve(address(claimAndStake), aliceAllocationAmount);
+        vm.prank(alice);
+        claimAndStake.stake(aliceAllocationAmount);
+        assertEq(claimAndStake.usersStake(alice, 0).amount, aliceAllocationAmount);
+        assertEq(claimAndStake.usersStake(alice, 0).startTime, block.timestamp);
+        assertEq(claimAndStake.usersStake(alice, 0).claimTime, 0);
+    }
+
+    function test_unstake() public {
+        vm.prank(owner);
+        claimAndStake.setUnstakeEnabled(true);
+        vm.startPrank(alice);
+        uint256 startBalance = cmdkLaunchKit.balanceOf(alice);
+        cmdkLaunchKit.approve(address(claimAndStake), 3 ether);
+        // Stake 1
+        uint256 startTime1 = block.timestamp;
+        claimAndStake.stake(1 ether);
+        // Stake 2
+        uint256 startTime2 = block.timestamp + 10 seconds;
+        vm.warp(startTime2);
+        claimAndStake.stake(2 ether);
+        // Unstake All
+        uint256 endTime = block.timestamp + 10 seconds;
+        vm.warp(endTime);
+        claimAndStake.unstakeAll();
+        assertEq(cmdkLaunchKit.balanceOf(alice), startBalance);
+        // Check stakes
+        assertEq(claimAndStake.usersStake(alice, 0).amount, 1 ether);
+        assertEq(claimAndStake.usersStake(alice, 0).startTime, startTime1);
+        assertEq(claimAndStake.usersStake(alice, 0).claimTime, endTime);
+        assertEq(claimAndStake.usersStake(alice, 1).amount, 2 ether);
+        assertEq(claimAndStake.usersStake(alice, 1).startTime, startTime2);
+        assertEq(claimAndStake.usersStake(alice, 1).claimTime, endTime);
     }
 }

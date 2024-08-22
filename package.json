@@ -1,14 +1,14 @@
 {
-  "name": "cmdk-genesis-kit",
+  "name": "cmdk-launch-kit",
   "license": "MIT",
   "version": "0.1.0",
-  "description": "CMDK Genesis Kit",
+  "description": "CMDK Launch Kit",
   "files": [
     "src/**/*.sol"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DROPcmdk/cmdk-genesis-kit.git"
+    "url": "git+https://github.com/CMDKONE/cmdk-launch-kit.git"
   },
   "scripts": {
     "clean": "forge clean && forge build",
@@ -16,11 +16,9 @@
     "test:logs": "forge test -vvvv",
     "docs": "forge doc",
     "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:cmdk:testnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:modaRewards:testnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:emtRewards:testnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:cmdk:mainnet": "forge script script/DeployCMDKGenesisKit.s.sol:DeployCMDKGenesisKit --rpc-url mainnet --broadcast --verify -vvvv",
-    "deploy:modaRewards:mainnet": "forge script script/DeployModaRewards.s.sol:DeployModaRewards --rpc-url mainnet --broadcast --verify -vvvv",
-    "deploy:emtRewards:mainnet": "forge script script/DeployEmtRewards.s.sol:DeployEmtRewards --rpc-url mainnet --broadcast --verify -vvvv"
+    "deploy:cmdk:testnet": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --rpc-url sepolia --broadcast --verify -vvvv",
+    "deploy:claiming:testnet": "forge script script/DeployClaiming.s.sol:DeployClaiming --rpc-url sepolia --broadcast --verify -vvvv",
+    "deploy:cmdk:mainnet": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --rpc-url mainnet --broadcast --verify -vvvv",
+    "deploy:claiming:mainnet": "forge script script/DeployClaiming.s.sol:DeployClaiming --rpc-url mainnet --broadcast --verify -vvvv"
   }
 }
