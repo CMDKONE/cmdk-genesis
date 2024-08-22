@@ -25,7 +25,7 @@ contract CMDKGenesisKitTest is Test {
 
     function test_setup() public view {
         assertEq(cmdkGenesisKit.name(), "CMDK Genesis Kit");
-        assertEq(cmdkGenesisKit.symbol(), "$CMK404");
+        assertEq(cmdkGenesisKit.symbol(), "$ONE404");
         assertEq(cmdkGenesisKit.totalSupply(), totalNfts * NFT);
         assertEq(cmdkGenesisKit.balanceOf(owner), totalNfts * NFT);
     }

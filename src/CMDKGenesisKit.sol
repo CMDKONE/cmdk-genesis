@@ -40,7 +40,7 @@ contract CMDKGenesisKit is Ownable, ERC404, IERC4906, IERC7572 {
     bool private _singleUri = true;
     address public bridgeAddress;
 
-    constructor(address owner_) ERC404("CMDK Genesis Kit", "$CMK404", 18) Ownable(owner_) {
+    constructor(address owner_) ERC404("CMDK Genesis Kit", "$ONE404", 18) Ownable(owner_) {
         // Do not mint the ERC721s to the initial owner, as it's a waste of gas.
         _setERC721TransferExempt(owner_, true);
         _mintERC20(owner_, 5_000 * units);
