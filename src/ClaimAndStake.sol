@@ -5,28 +5,9 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC404} from "erc404/interfaces/IERC404.sol";
+import {IClaimAndStake} from "./interfaces/IClaimAndStake.sol";
 
-contract ClaimAndStake is Ownable, ReentrancyGuard {
-    error InvalidProof();
-    error AlreadyClaimed();
-    error MustBeNonZero();
-    error InsufficientRewards();
-    error AddressCannotBeZero();
-    error UnstakingNotEnabled();
-    error Unauthorized();
-    error TransferFailed();
-
-    event TokensStaked(uint256 amount);
-    event TokensClaimed(uint256 amount);
-    event TokensWithdrawn(uint256 amount);
-
-    struct Stake {
-        uint256 amount;
-        uint256 startTime;
-        uint256 claimTime;
-        uint16 multiplier;
-    }
-
+contract ClaimAndStake is IClaimAndStake, Ownable, ReentrancyGuard {
     bytes32 public merkleRoot;
     mapping(address => bool) public claimed;
     address private immutable cmk404Address;
