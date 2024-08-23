@@ -3,20 +3,20 @@ pragma solidity ^0.8.20;
 
 /*
 
-  ___ __  __ ____ _  _     __   ___   __            
- / __|  \/  |  _ ( )/ )   /. | / _ \ /. |           
-( (__ )    ( )(_) )  (   (_  _| (_) |_  _)          
- \___|_/\/\_|____(_)\_)_ __(_)_\___/ _(_)
+    ___ __  __ ____ _  _     __   ___   __            
+    / __|  \/  |  _ ( )/ )   /. | / _ \ /. |           
+    ( (__ )    ( )(_) )  (   (_  _| (_) |_  _)          
+    \___|_/\/\_|____(_)\_)_ __(_)_\___/ _(_)
 
-                                                                                                                                                                                                                                         
-Welcome to the Connected Music Development Kit - the next-generation digital music protocol, designed to harness the opportunities that exist within AI and Web3 for the global music industry ecosystem. These CMDK Genesis Kits will grant you inside access to eco-system pre-launch, attracting more access, utility and rewards as described in the documentation. Each 404 tokens is fractionally tradable on a DEX and each whole token converts into an NFT in your wallet. Tokens and NFTs will soon be bridgeable to other chains and will play a role in the validation and curation of the Connected Music Network.
+                                                                                                                                                                                                                                            
+    Welcome to the Connected Music Development Kit - the next-generation digital music protocol, designed to harness the opportunities that exist within AI and Web3 for the global music industry ecosystem. These CMDK Genesis Kits will grant you inside access to eco-system pre-launch, attracting more access, utility and rewards as described in the documentation. Each 404 tokens is fractionally tradable on a DEX and each whole token converts into an NFT in your wallet. Tokens and NFTs will soon be bridgeable to other chains and will play a role in the validation and curation of the Connected Music Network.
 
-At the time of contract deployment, the following links are official:
+    At the time of contract deployment, the following links are official:
 
-tg: https://t.me/DROPcmdkportal
-web: https://dropcmdk.ai/
-x: https://x.com/dropcmdk
-github: https://github.com/dropcmdk
+    tg: https://t.me/cmdkoneportal
+    web: https://cmdk.one/
+    x: https://x.com/cmdkone
+    github: https://github.com/CMDKONE
     
 */
 

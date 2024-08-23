@@ -59,14 +59,15 @@ contract ClaimAndStakeTest is Test {
     function test_claim() public {
         vm.prank(alice);
         claimAndStake.claim(aliceAllocationAmount, aliceProof);
-        uint256 amount = claimAndStake.usersStake(alice, 0).amount;
-        uint256 startTime = claimAndStake.usersStake(alice, 0).startTime;
-        uint256 claimTime = claimAndStake.usersStake(alice, 0).claimTime;
-        assertEq(amount, aliceAllocationAmount);
-        assertEq(startTime, block.timestamp);
-        assertEq(claimTime, 0);
         vm.prank(bob);
         claimAndStake.claim(bobAllocationAmount, bobProof);
+        assertEq(claimAndStake.userCount(), 2);
+        assertEq(claimAndStake.usersStake(alice, 0).amount, aliceAllocationAmount);
+        assertEq(claimAndStake.usersStake(alice, 0).startTime, block.timestamp);
+        assertEq(claimAndStake.usersStake(alice, 0).claimTime, 0);
+        assertEq(claimAndStake.usersStake(bob, 0).amount, bobAllocationAmount);
+        assertEq(claimAndStake.usersStake(bob, 0).startTime, block.timestamp);
+        assertEq(claimAndStake.usersStake(bob, 0).claimTime, 0);
     }
 
     function test_claim_wrongProof_revert() public {

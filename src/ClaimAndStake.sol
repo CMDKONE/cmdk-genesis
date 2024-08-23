@@ -24,6 +24,7 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
         uint256 amount;
         uint256 startTime;
         uint256 claimTime;
+        uint16 multiplier;
     }
 
     bytes32 public merkleRoot;
@@ -58,7 +59,7 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
         bytes32 node = keccak256(abi.encodePacked(msg.sender, amount));
         if (!MerkleProof.verify(merkleProof, merkleRoot, node)) revert InvalidProof();
         claimed[msg.sender] = true;
-        createStakedEntry(msg.sender, amount);
+        createStakedEntry(msg.sender, amount, 2);
     }
 
     /**
@@ -68,7 +69,7 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
     function stake(uint256 amount) external nonReentrant {
         bool success = IERC404(cmk404Address).erc20TransferFrom(msg.sender, address(this), amount);
         if (!success) revert TransferFailed();
-        createStakedEntry(msg.sender, amount);
+        createStakedEntry(msg.sender, amount, 1);
     }
 
     function unstakeAll() external {
@@ -144,13 +145,13 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
      * @dev Helper function to create a staked entry
      * @param amount The amount to stake
      */
-    function createStakedEntry(address staker, uint256 amount) internal {
+    function createStakedEntry(address staker, uint256 amount, uint16 multiplier) internal {
         if (amount == 0) revert MustBeNonZero();
         // If this is the users first stake, add them to the stakers list
         if (_usersStakes[staker].length == 0) {
             _stakers.push(staker);
         }
-        _usersStakes[staker].push(Stake(amount, block.timestamp, 0));
+        _usersStakes[staker].push(Stake(amount, block.timestamp, 0, multiplier));
         emit TokensStaked(amount);
     }
 }
