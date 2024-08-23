@@ -41,10 +41,18 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
 
     // External functions
 
+    /**
+     * @dev Set the merkle root for the whitelist
+     * @param merkleRoot_ The merkle root for the whitelist
+     */
     function setMerkleRoot(bytes32 merkleRoot_) external onlyOwner {
         merkleRoot = merkleRoot_;
     }
 
+    /**
+     * @dev Enable or disable unstaking
+     * @param enabled Whether or not unstaking is enabled
+     */
     function setUnstakeEnabled(bool enabled) external onlyOwner {
         unstakeEnabled = enabled;
     }
@@ -72,6 +80,9 @@ contract ClaimAndStake is Ownable, ReentrancyGuard {
         createStakedEntry(msg.sender, amount, 1);
     }
 
+    /**
+     * @dev Unstake all users tokens
+     */
     function unstakeAll() external {
         if (!unstakeEnabled) revert UnstakingNotEnabled();
 

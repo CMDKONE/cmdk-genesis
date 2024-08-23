@@ -2,18 +2,19 @@
 pragma solidity ^0.8.20;
 
 import {Script, console} from "forge-std/Script.sol";
-import {CMDKLaunchKit} from "../src/CMDKLaunchKit.sol";
+import {ClaimAndStake} from "../src/ClaimAndStake.sol";
 
-contract DeployCMDKLaunchKit is Script {
+contract DeployClaimAndStake is Script {
     function run() public {
         address owner = vm.envAddress("DEPLOYER_ADDRESS");
+        address tokenAddress = vm.envAddress("ONE404_TOKEN_ADDRESS");
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
 
         vm.startBroadcast(privateKey);
 
-        CMDKLaunchKit cmdkLaunchKit = new CMDKLaunchKit(owner, "CMDK Launch Kit", "$ONE404");
+        ClaimAndStake claimAndStake = new ClaimAndStake(owner, tokenAddress);
 
-        console.log("CMDKLaunchKit deployed at:", address(cmdkLaunchKit));
+        console.log("ClaimAndStake deployed at:", address(claimAndStake));
 
         vm.stopBroadcast();
     }

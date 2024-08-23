@@ -25,7 +25,7 @@ contract ClaimAndStakeTest is Test {
     error InvalidProof();
 
     function setUp() public {
-        cmdkLaunchKit = new CMDKLaunchKit(owner);
+        cmdkLaunchKit = new CMDKLaunchKit(owner, "name", "symbol");
         claimAndStake = new ClaimAndStake(owner, address(cmdkLaunchKit));
         vm.startPrank(owner);
         cmdkLaunchKit.setERC721TransferExempt(address(claimAndStake), true);

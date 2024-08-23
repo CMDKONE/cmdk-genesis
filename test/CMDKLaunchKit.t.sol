@@ -20,12 +20,12 @@ contract CMDKLaunchKitTest is Test {
     event ContractURIUpdated();
 
     function setUp() public {
-        cmdkLaunchKit = new CMDKLaunchKit(owner);
+        cmdkLaunchKit = new CMDKLaunchKit(owner, "theName", "theSymbol");
     }
 
     function test_setup() public view {
-        assertEq(cmdkLaunchKit.name(), "CMDK Launch Kit");
-        assertEq(cmdkLaunchKit.symbol(), "$ONE404");
+        assertEq(cmdkLaunchKit.name(), "theName");
+        assertEq(cmdkLaunchKit.symbol(), "theSymbol");
         assertEq(cmdkLaunchKit.totalSupply(), totalNfts * NFT);
         assertEq(cmdkLaunchKit.balanceOf(owner), totalNfts * NFT);
     }
