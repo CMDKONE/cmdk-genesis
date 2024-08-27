@@ -12,9 +12,7 @@ const generateProofsForWhitelist = (filename: string, content: string) => {
 
   const allocations = csv.data.map((row) => {
     const address = row[0];
-    const amount = BigInt(web3.utils.toWei(row[1], "ether"));
-    const multiplier = BigInt(row[2]);
-    const allocationAmount = amount * multiplier;
+    const allocationAmount = BigInt(web3.utils.toWei(row[1], "ether"));
     return { address, allocationAmount };
   });
 

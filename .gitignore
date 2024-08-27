@@ -14,7 +14,8 @@ docs/
 .env
 
 # Whitelist
-whitelist.*
+whitelist.csv
+whitelist.json
 
 # Node modules
 node_modules/
