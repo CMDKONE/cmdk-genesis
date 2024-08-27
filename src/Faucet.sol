@@ -7,6 +7,9 @@ contract Faucet {
     address private immutable cmk404Address;
 
     constructor(address cmk404Address_) {
+        if (cmk404Address_ == address(0)) {
+            revert("Invalid address");
+        }
         cmk404Address = cmk404Address_;
     }
 

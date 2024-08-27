@@ -80,9 +80,9 @@ contract ClaimAndStake is IClaimAndStake, Ownable, ReentrancyGuard {
         }
 
         if (totalAmount == 0) revert MustBeNonZero();
+        emit TokensClaimed(totalAmount);
         bool success = IERC404(cmk404Address).transfer(msg.sender, totalAmount);
         if (!success) revert TransferFailed();
-        emit TokensClaimed(totalAmount);
     }
 
     /**
