@@ -1,4 +1,4 @@
-# CMDK Genesis Kits
+# CMDK Launch Kits
 
 ![drop-case](drop-case.jpg)
 
