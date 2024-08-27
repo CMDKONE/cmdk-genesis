@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.20;
 
 /// @title EIP-721 Metadata Update Extension
 interface IERC4906 {

@@ -1,5 +1,5 @@
 [profile.default]
-solc = "0.8.26"
+solc = "0.8.20"
 ffi = true
 ast = true
 build_info = true
@@ -18,6 +18,6 @@ sepolia = { key = "${ETHERSCAN_API_KEY}" }
 
 [fmt]
 multiline_func_header = "params_first"
-line_length = 105
+line_length = 120
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
