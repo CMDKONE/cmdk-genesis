@@ -12,3 +12,9 @@ docs/
 
 # Dotenv file
 .env
+
+# Whitelist
+whitelist.*
+
+# Node modules
+node_modules/

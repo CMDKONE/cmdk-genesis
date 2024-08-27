@@ -48,14 +48,38 @@ Load the variables in the .env file
 $ source .env
 ```
 
+#### Install Dependencies
+
+```shell
+$ npm i
+```
+
+#### Generate Whitelist
+
+```shell
+$ npm run generate:whitelist
+```
+
+#### Set Merkle Root for Claiming
+
+```shell
+$ npm run setRoot:testnet
+```
+
+#### Deploy all Contracts to Testnet
+
+```shell
+$ npm run deploy:testnet
+```
+
 #### Deploy CMDK Token
 
 ```shell
-$ npm run deploy:cmdk:[mainnet or testnet]
+$ npm run deploy:cmdk
 ```
 
-#### Deploy Support Rewards for MODA
+#### Deploy Claiming and Staking Contract
 
 ```shell
-$ npm run deploy:claiming:[mainnet or testnet]
+$ npm run deploy:claiming
 ```

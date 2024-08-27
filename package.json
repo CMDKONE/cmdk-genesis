@@ -15,10 +15,21 @@
     "test": "npm run clean && forge test",
     "test:logs": "forge test -vvvv",
     "docs": "forge doc",
+    "generate:whitelist": "ts-node generateWhitelist.ts",
+    "setRoot:testnet": "forge script script/SetMerkleRoot.s.sol:SetMerkleRoot --rpc-url sepolia --broadcast --verify -vvvv",
     "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:cmdk:testnet": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:claiming:testnet": "forge script script/DeployClaimAndStake.s.sol:DeployClaimAndStake --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:cmdk:mainnet": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --rpc-url mainnet --broadcast --verify -vvvv",
-    "deploy:claiming:mainnet": "forge script script/DeployClaimAndStake.s.sol:DeployClaimAndStake --rpc-url mainnet --broadcast --verify -vvvv"
+    "deploy:cmdk": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --rpc-url mainnet --broadcast --verify -vvvv",
+    "deploy:claiming": "forge script script/DeployClaimAndStake.s.sol:DeployClaimAndStake --rpc-url mainnet --broadcast --verify -vvvv"
+  },
+  "dependencies": {
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.4.0",
+    "papaparse": "^5.4.1",
+    "web3": "^4.11.1"
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.3.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }

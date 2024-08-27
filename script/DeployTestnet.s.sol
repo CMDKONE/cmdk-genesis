@@ -10,24 +10,27 @@ contract DeployTestnet is Script {
     function run() public {
         address owner = vm.envAddress("DEPLOYER_ADDRESS");
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
+        bytes32 merkleRoot = vm.envUint("MERKLE_ROOT");
 
         vm.startBroadcast(privateKey);
 
         // CMDK TOKEN
         CMDKLaunchKit cmdkLaunchKit = new CMDKLaunchKit(owner, "Test ERC404", "$T404");
-        console.log("CMDKLaunchKit deployed at:", address(cmdkLaunchKit));
 
         // Claim and Stake contract
         ClaimAndStake claimAndStake = new ClaimAndStake(owner, address(cmdkLaunchKit));
-        console.log("ClaimAndStake deployed at:", address(claimAndStake));
+        claimAndStake.setMerkleRoot(merkleRoot);
 
         // Faucet contract
         Faucet faucet = new Faucet(address(cmdkLaunchKit));
-        console.log("Faucet deployed at:", address(faucet));
 
         // Give out allocation
         cmdkLaunchKit.transfer(address(claimAndStake), 1000);
         cmdkLaunchKit.transfer(address(faucet), 1000);
+
+        console.log('export const FAUCET_ADDRESS: `0x${string}` = "', address(faucet), '";');
+        console.log('export const ONE404_TOKEN_ADDRESS: `0x${string}` = "', address(cmdkLaunchKit), '";');
+        console.log('export const CLAIM_CONTRACT_ADDRESS: `0x${string}` = "', address(claimAndStake), '";');
 
         vm.stopBroadcast();
     }
