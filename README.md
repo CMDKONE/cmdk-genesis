@@ -30,9 +30,9 @@ $ npm run test:logs
 
 ### Security Scans
 
-[![Slither Analysis](https://github.com/CMDKONE/cmdk-launch-kit-kit/actions/workflows/slither.yml/badge.svg)](https://github.com/CMDKONE/cmdk-launch-kit-kit/actions/workflows/slither.yml)
+[![Slither Analysis](https://github.com/CMDKONE/cmdk-launch-kit/actions/workflows/slither.yml/badge.svg)](https://github.com/CMDKONE/cmdk-launch-kit/actions/workflows/slither.yml)
 
-Security scanning is done via the Slither gitaction. Vulnerabilities can be viewed [here](https://github.com/CMDKONE/cmdk-launch-kit-kit/security/code-scanning).
+Security scanning is done via the Slither gitaction. Vulnerabilities can be viewed [here](https://github.com/CMDKONE/cmdk-launch-kit/security/code-scanning).
 
 ### Deployment
 
