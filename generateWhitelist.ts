@@ -35,9 +35,10 @@ const generateProofsForWhitelist = (filename: string, content: string) => {
 
   const addresses = allocations.reduce((acc, allocation, index) => {
     const { address, allocationAmount } = allocation;
+    const lowerCaseAddress = address.toLowerCase();
     return {
       ...acc,
-      [address]: {
+      [lowerCaseAddress]: {
         proofs: merkleTree.getHexProof(leafNodes[index]),
         allocation: allocationAmount.toString(),
       },
