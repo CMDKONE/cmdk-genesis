@@ -10,7 +10,7 @@ contract DeployTestnet is Script {
     function run() public {
         address owner = vm.envAddress("DEPLOYER_ADDRESS");
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        bytes32 merkleRoot = vm.envUint("MERKLE_ROOT");
+        bytes32 merkleRoot = vm.envBytes32("MERKLE_ROOT");
 
         vm.startBroadcast(privateKey);
 
