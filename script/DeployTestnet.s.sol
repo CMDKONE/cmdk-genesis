@@ -20,13 +20,14 @@ contract DeployTestnet is Script {
         // Claim and Stake contract
         ClaimAndStake claimAndStake = new ClaimAndStake(owner, address(cmdkLaunchKit));
         claimAndStake.setMerkleRoot(merkleRoot);
+        claimAndStake.setUnstakeEnabled(true);
 
         // Faucet contract
         Faucet faucet = new Faucet(address(cmdkLaunchKit));
 
         // Give out allocation
-        cmdkLaunchKit.transfer(address(claimAndStake), 1000);
-        cmdkLaunchKit.transfer(address(faucet), 1000);
+        cmdkLaunchKit.transfer(address(claimAndStake), 1000 ether);
+        cmdkLaunchKit.transfer(address(faucet), 1000 ether);
 
         console.log('export const FAUCET_ADDRESS: `0x${string}` = "', address(faucet), '";');
         console.log('export const ONE404_TOKEN_ADDRESS: `0x${string}` = "', address(cmdkLaunchKit), '";');
