@@ -6,7 +6,7 @@
     "editor.defaultFormatter": "JuanBlanco.solidity"
   },
   "solidity.formatter": "forge",
-  "cSpell.words": ["cmdk", "merkle", "remappings", "sepolia"],
+  "cSpell.words": ["cmdk", "merkle", "remappings", "sepolia", "unstaking"],
   "solidity.remappings": [
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",

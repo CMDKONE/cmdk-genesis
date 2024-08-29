@@ -75,11 +75,11 @@ $ npm run deploy:testnet
 #### Deploy CMDK Token
 
 ```shell
-$ npm run deploy:cmdk
+$ npm run deploy:cmdk [sepolia or mainnet]
 ```
 
 #### Deploy Claiming and Staking Contract
 
 ```shell
-$ npm run deploy:claiming
+$ npm run deploy:claiming [sepolia or mainnet]
 ```

@@ -9,13 +9,11 @@ const web3 = new Web3();
 const generateProofsForWhitelist = (filename: string, content: string) => {
   const csv: { data: string[][] } = Papa.parse(content);
   csv.data.shift();
-
   const allocations = csv.data.map((row) => {
     const address = row[0];
     const allocationAmount = BigInt(web3.utils.toWei(row[1], "ether"));
     return { address, allocationAmount };
   });
-
   const leafNodes = allocations.map(({ address, allocationAmount }) => {
     return keccak256(
       Buffer.concat([

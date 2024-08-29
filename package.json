@@ -16,10 +16,11 @@
     "test:logs": "forge test -vvvv",
     "docs": "forge doc",
     "generate:whitelist": "ts-node generateWhitelist.ts",
-    "setRoot:testnet": "forge script script/SetMerkleRoot.s.sol:SetMerkleRoot --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --rpc-url sepolia --broadcast --verify -vvvv",
-    "deploy:cmdk": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --rpc-url mainnet --broadcast --verify -vvvv",
-    "deploy:claiming": "forge script script/DeployClaimAndStake.s.sol:DeployClaimAndStake --rpc-url mainnet --broadcast --verify -vvvv"
+    "set:unstakingEnabled": "forge script script/SetUnstakingEnabled.s.sol:SetUnstakingEnabled --broadcast --verify -vvvv --rpc-url",
+    "set:merkleRoot": "forge script script/SetMerkleRoot.s.sol:SetMerkleRoot --broadcast --verify -vvvv --rpc-url",
+    "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --broadcast --verify -vvvv --rpc-url",
+    "deploy:cmdk": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --broadcast --verify -vvvv --rpc-url",
+    "deploy:claiming": "forge script script/DeployClaimAndStake.s.sol:DeployClaimAndStake --broadcast --verify -vvvv --rpc-url"
   },
   "dependencies": {
     "keccak256": "^1.0.6",
