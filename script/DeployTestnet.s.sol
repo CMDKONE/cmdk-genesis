@@ -26,6 +26,8 @@ contract DeployTestnet is Script {
         Faucet faucet = new Faucet(address(cmdkLaunchKit));
 
         // Give out allocation
+        cmdkLaunchKit.setERC721TransferExempt(address(claimAndStake), true);
+        cmdkLaunchKit.setERC721TransferExempt(address(faucet), true);
         cmdkLaunchKit.transfer(address(claimAndStake), 1000 ether);
         cmdkLaunchKit.transfer(address(faucet), 1000 ether);
 
