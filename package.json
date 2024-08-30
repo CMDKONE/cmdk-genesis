@@ -18,7 +18,7 @@
     "generate:whitelist": "ts-node generateWhitelist.ts",
     "set:unstakingEnabled": "forge script script/SetUnstakingEnabled.s.sol:SetUnstakingEnabled --broadcast --verify -vvvv --rpc-url",
     "set:merkleRoot": "forge script script/SetMerkleRoot.s.sol:SetMerkleRoot --broadcast --verify -vvvv --rpc-url",
-    "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --broadcast --verify -vvvv --rpc-url",
+    "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnet --broadcast --verify -vvvv --rpc-url sepolia",
     "deploy:cmdk": "forge script script/DeployCMDKLaunchKit.s.sol:DeployCMDKLaunchKit --broadcast --verify -vvvv --rpc-url",
     "deploy:claiming": "forge script script/DeployClaimAndStake.s.sol:DeployClaimAndStake --broadcast --verify -vvvv --rpc-url"
   },
